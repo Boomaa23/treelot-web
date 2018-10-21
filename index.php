@@ -1,11 +1,12 @@
 <?php 
-include "auth.php";
-if ((authMain() != "admin") && (authMain() != "user")) {
-	die("You do not have the adequate credentials to view this page.");
-}
-
-if (authMain() == "admin" && authCheck()) {
-	header("refresh:0;url=adminAuth.php?signup");
+if (!isset($_GET["admin"])) {
+	include "auth.php";
+	if ((authMain() != "admin") && (authMain() != "user")) {
+		die("You do not have the adequate credentials to view this page.");
+	}	
+	if (authMain() == "admin") {
+		header("refresh:0;url=adminAuth.php?signup");
+	}
 }
 ?>
 
@@ -37,7 +38,7 @@ if (authMain() == "admin" && authCheck()) {
 	</tr>
 	
 	<!--enter box fields-->
-	<form action="action.php?ts=<?php echo file_get_contents("timestamp.txt"); ?>" method="post">
+	<form action="action.php?ts=<?php echo file_get_contents("timestamp.txt") . PHP_EOL; if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 	<?php
 	//logs ip and time of access
 	/*

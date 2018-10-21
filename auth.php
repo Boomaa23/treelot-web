@@ -18,9 +18,9 @@ function authMain() {
 
 function authCheck() {
 	if (authMain() == "admin") {
-		return false;
-	} else {
 		return true;
+	} else {
+		return false;
 	}
 }
 ?>

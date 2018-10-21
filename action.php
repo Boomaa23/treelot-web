@@ -18,9 +18,13 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	file_put_contents("data/dataShiftsCB.json", json_encode($_POST["CB"]), FILE_APPEND);
 	
 	file_put_contents("timestamp.txt", time() , FILE_APPEND | LOCK_EX);
-}
-else {
+} else {
    die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
 }
-header( "refresh:0;url=index.php" );
+
+if(isset($_GET["admin"])) {
+	header("refresh:0;url=index.php?admin");
+} else {
+	header("refresh:0;url=index.php");
+}
 ?>

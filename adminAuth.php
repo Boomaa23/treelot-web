@@ -1,6 +1,8 @@
 <?php 
 include "auth.php";
-if (authMain() != "admin") {
+if (authMain() == "admin") {
+	authCheck();
+} else {
 	die("You do not have the adequate credentials to view this page.");
 }
 ?>
@@ -24,7 +26,7 @@ if (isset($_GET["reset"])) {
 } else if (isset($_GET["view"])) {
 	echo '<iframe width="100%" height="88%"src="archive/index.php" style="border:0;"></iframe>';
 } else if (isset($_GET["signup"])) {
-	echo '<iframe width="100%" height="88%"src="index.php" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="88%"src="index.php?admin" style="border:0;"></iframe>';
 }
 ?>
 </body>
