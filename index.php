@@ -39,10 +39,11 @@ if (authMain() == "admin") {
 	<form action="action.php?ts=<?php echo file_get_contents("timestamp.txt"); ?>" method="post">
 	<?php
 	//logs ip and time of access
+	/*
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$dateTime = date('m/d/Y G:i:s');
 	$date = $dateTime . " - " . $ip ;
-	file_put_contents("iplog.txt", $date . PHP_EOL, FILE_APPEND);
+	file_put_contents("iplog.txt", $date . PHP_EOL, FILE_APPEND);*/
 	
 	//reads existing signups from file
 	$dataAA = json_decode(file_get_contents("data/dataShiftsAA.json"));
