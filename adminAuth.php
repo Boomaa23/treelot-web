@@ -24,7 +24,7 @@ if (isset($_GET["reset"])) {
 } else if (isset($_GET["view"])) {
 	echo '<iframe width="100%" height="88%"src="archive/index.php" style="border:0;"></iframe>';
 } else if (isset($_GET["signup"])) {
-	echo '<iframe width="100%" height="88%"src="main.php" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="88%"src="index.php" style="border:0;"></iframe>';
 }
 ?>
 </body>

@@ -3,8 +3,9 @@ include "auth.php";
 if ((authMain() != "admin") && (authMain() != "user")) {
 	die("You do not have the adequate credentials to view this page.");
 }
-if (authMain() == "admin") {
-	header("refresh:0;url=adminAuth.php");
+
+if (authMain() == "admin" && authCheck()) {
+	header("refresh:0;url=adminAuth.php?signup");
 }
 ?>
 
