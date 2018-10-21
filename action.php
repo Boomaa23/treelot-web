@@ -20,7 +20,7 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	file_put_contents("timestamp.txt", time() , FILE_APPEND | LOCK_EX);
 }
 else {
-   die('There was an error submitting your request. Please try again. <a href="main.php">Back to main page</a>');
+   die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
 }
-header( "refresh:0;url=main.php" );
+header( "refresh:0;url=index.php" );
 ?>

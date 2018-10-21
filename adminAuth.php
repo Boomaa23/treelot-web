@@ -1,3 +1,10 @@
+<?php 
+include "auth.php";
+if (authMain() != "admin") {
+	die("You do not have the adequate credentials to view this page.");
+}
+?>
+
 <title>TR37 Tree Lot | Admin Browser</title>
 <link rel="icon" href="favicon.png">
 <style>
@@ -10,7 +17,7 @@
 <a href="adminAuth.php?view">View past years' shifts</a><br />
 <a href="adminAuth.php?signup">Sign up for new shifts</a><br />
 <hr />
-
+	
 <?php
 if (isset($_GET["reset"])) {
 	echo '<iframe width="100%" height="88%"src="reset.php" style="border:0;"></iframe>';
