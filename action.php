@@ -8,7 +8,7 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	ftruncate(fopen("data/dataShiftsCA.json", "r+"), 0);
 	ftruncate(fopen("data/dataShiftsCB.json", "r+"), 0);
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
-
+	
 	//writes inputs from html to file
     file_put_contents("data/dataShiftsAA.json", json_encode($_POST["AA"]), FILE_APPEND);
 	file_put_contents("data/dataShiftsAB.json", json_encode($_POST["AB"]), FILE_APPEND);

@@ -27,6 +27,7 @@ if (!isset($_GET["admin"])) {
 	<div id="par">
 	<p>This is the website to sign up for tree lot shifts for 2018. On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact Nikhil Ograin by email at <a href="mailto:nikhil.ograin@gmail.com">nikhil.ograin@gmail.com</a> or by phone at (805) 350-8503 if you have any issues with signups. Thank you!</p>
+	<!--<a href="delete/index.php">Request a shift deletion</a>-->
 	</div>
 	<br />
 	<table cellspacing="0" cellpadding="5" align="center">
@@ -64,10 +65,11 @@ if (!isset($_GET["admin"])) {
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$wk=0;
-	$readAA = $readAB = $readBA = $readBB = $readCA = $readCB = false;
+	$readAA = $readAB = $readBA = $readBB = $readCA = $readCB = null;
 
 	//setup of shift form boxes
 	foreach ($period as $dt) {
+		/*
 		if(!empty($dataAA[$wk]))
 			$readAA = "readonly";
 		if(!empty($dataAB[$wk]))
@@ -80,6 +82,7 @@ if (!isset($_GET["admin"])) {
 			$readCA = "readonly";
 		if(!empty($dataCB[$wk]))
 			$readCB = "readonly";
+		*/
 		
 		//checks to disable weekend shifts
 		$wkCk = (int)$dates[2];
