@@ -64,17 +64,30 @@ if (!isset($_GET["admin"])) {
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$wk=0;
+	$readAA = $readAB = $readBA = $readBB = $readCA = $readCB = false;
 
 	//setup of shift form boxes
 	foreach ($period as $dt) {
+		if(!empty($dataAA[$wk]))
+			$readAA = "readonly";
+		if(!empty($dataAB[$wk]))
+			$readAB = "readonly";
+		if(!empty($dataBA[$wk]))
+			$readBA = "readonly";
+		if(!empty($dataBB[$wk]))
+			$readBB = "readonly";
+		if(!empty($dataCA[$wk]))
+			$readCA = "readonly";
+		if(!empty($dataCB[$wk]))
+			$readCB = "readonly";
 		
 		//checks to disable weekend shifts
 		$wkCk = (int)$dates[2];
 		if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input type="text" name="AA[]" value="' . $dataAA[$wk] . '"><br>
-			<input type="text" name="AB[]" value="' . $dataAB[$wk] . '"><br></td>';
+			<td><input type="text" name="AA[]" value="' . $dataAA[$wk] . '" ' . $readAA . '><br>
+			<input type="text" name="AB[]" value="' . $dataAB[$wk] . '" ' . $readAB . '><br></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
@@ -84,10 +97,10 @@ if (!isset($_GET["admin"])) {
 		
 		//finishes input box setup
 		echo '
-		<td><input type="text" name="BA[]" value="' . $dataBA[$wk] . '"><br>
-		<input type="text" name="BB[]" value="' . $dataBB[$wk] . '"><br></td>
-		<td><input type="text" name="CA[]" value="' . $dataCA[$wk] . '"><br>
-		<input type="text" name="CB[]" value="' . $dataCB[$wk] . '"><br></td>
+		<td><input type="text" name="BA[]" value="' . $dataBA[$wk] . '" ' . $readBA . '><br>
+		<input type="text" name="BB[]" value="' . $dataBB[$wk] . '" ' . $readBB . '><br></td>
+		<td><input type="text" name="CA[]" value="' . $dataCA[$wk] . '" ' . $readCA . '><br>
+		<input type="text" name="CB[]" value="' . $dataCB[$wk] . '" ' . $readCB . '><br></td>
 		</tr>';
 		$wk++;
 	}

@@ -8,7 +8,7 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	ftruncate(fopen("data/dataShiftsCA.json", "r+"), 0);
 	ftruncate(fopen("data/dataShiftsCB.json", "r+"), 0);
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
-	
+
 	//writes inputs from html to file
     file_put_contents("data/dataShiftsAA.json", json_encode($_POST["AA"]), FILE_APPEND);
 	file_put_contents("data/dataShiftsAB.json", json_encode($_POST["AB"]), FILE_APPEND);
@@ -19,7 +19,11 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	
 	file_put_contents("timestamp.txt", time() , FILE_APPEND | LOCK_EX);
 } else {
-   die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
+	if(isset($_GET["admin"])) {
+		die('There was an error submitting your request. Please try again. <a href="index.php?admin">Back to main page</a>');
+	} else  {
+		die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
+	}
 }
 
 if(isset($_GET["admin"])) {
