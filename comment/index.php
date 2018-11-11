@@ -18,8 +18,8 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 </head>
 
 <body>
-<h2 style="text-align:center;">TR37 Shift Comments Viewer</h2>
-<p style="text-align:center;">This is a place to view any comments or concerns you may have about a specific shift. For example, if you want an older scout to accompany your younger scout to a shift, please type as such here. Some comments may be shortened, so you can click on any one to view the full length.</p>
+<h2 style="text-align:center;">Troop 37 Shift Comments Viewer</h2>
+<p style="text-align:center;">This is a page to view or add any comments or concerns you may have about a specific shift. For example, if you want an older scout to accompany your younger scout to a shift, please type as such here. Some comments may be shortened, so you can click on any one to view the full length.</p>
 <p style="text-align:center;"><button><a href="add.php" id="nostyle"><b>Add a Comment</b></a></button>
 <button><a href="../index.php<?php if(authCheck()) {echo "?admin";} ?>" id="nostyle"><b>Back to main page</b></a></button></p>
 <div id="content"><hr /></div>
