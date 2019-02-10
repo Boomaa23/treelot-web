@@ -27,9 +27,21 @@ if (!isset($_GET["admin"])) {
 	<h1>Troop 37 Tree Lot Signup</h1>
 	<div id="par">
 	<p>This is the website to sign up for tree lot shifts for 2018. On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
-	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact Nikhil Ograin by email at <a href="mailto:nikhil.ograin@gmail.com">nikhil.ograin@gmail.com</a> or by phone at (805) 350-8503 if you have any issues with signups. Thank you!</p>
+	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Thank you!</p>
 	<!--<a href="delete/index.php">Request a shift deletion</a>-->
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
+	<p>Comments for today: <?php echo(date("n/d/Y",time())); ?></p>
+	<?php 
+		$files = glob('comment/data/*.txt', GLOB_BRACE);
+		foreach($files as $file) {
+			$fileArray = file("$file");
+			$dir_file = str_replace("data/", "", $file);
+			$dir_file = str_replace(".txt", "", $dir_file);
+			if(trim($fileArray[1]) == date("n/d/Y",time())) {
+				echo '<b>' . $fileArray[3] . ' - ' . $fileArray[0] . ': </b>' . $fileArray[2] . '<br>';
+			}
+		}
+	?>
 	</div>
 	<br />
 	<table cellspacing="0" cellpadding="5" align="center">

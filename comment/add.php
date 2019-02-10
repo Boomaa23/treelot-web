@@ -17,8 +17,13 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 
 <body>
 	<h2 style="text-align:center;">Add a Shift Comment</h2><br />
-	<a><b>Select a date:</b></a>
+	
 <form action="addAction.php" method="post">
+	<a><b>Your Scout's Name:</a></b><br />
+	<input type="text" style="width:300px;" name="name" required>
+	<br /><br />
+	
+	<a><b>Select a date:</b></a>
 	<table><tr>
 	<?php
 	$dates = file("../resetDates.txt");
@@ -29,7 +34,7 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	$wk = 1;
 	
 	foreach ($period as $dt) {
-		echo '<td><input type="radio" name="date" value = ' . $dt->format("m/d/Y\n") . '></td><td>' . $dt->format("l, m/d/Y\n") . '</td>';
+		echo '<td><input type="radio" name="date" value = ' . $dt->format("m/d/Y\n") . ' required></td><td>' . $dt->format("l, m/d/Y\n") . '</td>';
 		if($wk%3 == 0) {
 			echo '</tr><tr>';
 		}
@@ -38,11 +43,11 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	?>
 	</table><br />
 	<a><b>Title your comment</a></b><br />
-	<input type="text" style="width:300px;" name="title">
+	<input type="text" style="width:300px;" name="title" required>
 	<br /><br />
 	
 	<a><b>Write your comment</b></a><br />
-	<textarea name="comment" cols="70" rows="15"></textarea>
+	<textarea name="comment" cols="70" rows="15" required></textarea>
 	<br /><br /><input type="submit">
 </form>
 </body>

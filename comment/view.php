@@ -6,9 +6,13 @@
 </style>
 
 <?php
-if(isset($_GET["file"])) {
-	$file = file("data/" . $_GET["file"]. ".txt");
-	echo '<div id="title">' . $file[0] . '</div><div id="date">' . $file[1] . '</div><br><div id="content">' . $file[2] . '</div>';
+if(isset($_GET["file"]) && isset($_GET["src"])) {
+	if($_GET["src"] == "archive" && isset($_GET["year"])) {
+		$file = file('archive/' .$_GET["year"] . '/comment/' . $_GET["file"] . '.txt');
+	} else {
+		$file = file("data/" . $_GET["file"]. ".txt");
+	}
+	echo '<div id="title">' . $file[3] . ' - '. $file[0] . '</div><div id="date">' . $file[1] . '</div><br><div id="content">' . $file[2] . '</div>';
 	echo '<br><button value=""><a href="index.php" id="nostyle">Back to comment viewer</a></button>';
 } else {
 	die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');

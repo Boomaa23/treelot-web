@@ -29,14 +29,15 @@ if (authMain() != "admin") {
 <table cellspacing="0" cellpadding="5" align="center">
 <?php
 if(isset($_POST["year"])) {
+$year = $_POST["year"];
 //reads existing signups from file
-if(file_exists($_POST["year"]. "/")) {
-	$dataAA = json_decode(file_get_contents($_POST["year"].'/dataShiftsAA.json'));
-	$dataAB = json_decode(file_get_contents($_POST["year"].'/dataShiftsAB.json'));
-	$dataBA = json_decode(file_get_contents($_POST["year"].'/dataShiftsBA.json'));
-	$dataBB = json_decode(file_get_contents($_POST["year"].'/dataShiftsBB.json'));
-	$dataCA = json_decode(file_get_contents($_POST["year"].'/dataShiftsCA.json'));
-	$dataCB = json_decode(file_get_contents($_POST["year"].'/dataShiftsCB.json'));
+if(file_exists($year. "/")) {
+	$dataAA = json_decode(file_get_contents($year.'/dataShiftsAA.json'));
+	$dataAB = json_decode(file_get_contents($year.'/dataShiftsAB.json'));
+	$dataBA = json_decode(file_get_contents($year.'/dataShiftsBA.json'));
+	$dataBB = json_decode(file_get_contents($year.'/dataShiftsBB.json'));
+	$dataCA = json_decode(file_get_contents($year.'/dataShiftsCA.json'));
+	$dataCB = json_decode(file_get_contents($year.'/dataShiftsCB.json'));
 } else {
 	die ("There was a problem retrieving the shifts for your specified year");
 }
@@ -78,6 +79,27 @@ foreach ($period as $dt) {
 </table>
 </form>
 <br />
+<?php
+function trim_text($input, $length) {
+    if (strlen($input) <= $length)
+        return $input;
+
+    $last_space = strrpos(substr($input, 0, $length), ' ');
+    return substr($input, 0, $last_space) . '...';
+}
+
+$files = glob('data/*.txt', GLOB_BRACE);
+foreach($files as $file) {
+	$fileArray = file("$file");
+	echo $file;
+	$dir_file = str_replace('archive/'.$year.'comment/', "", $file);
+	$dir_file = str_replace(".txt", "", $dir_file);
+	echo '<a id="nostyle" href="../comment/view.php?file=' . $dir_file . '&src=archive&year=' . $year.'"><div id="title">' . trim_text($fileArray[0],70);
+	echo '</div><div id="date">' . $fileArray[1];
+	echo '</div><br><div id="content">' . trim_text($fileArray[2],500);
+	echo "</a><hr /></div>";
+}
+?>
 </body>
 </html>
 

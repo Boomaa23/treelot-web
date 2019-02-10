@@ -54,18 +54,31 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	$end = PHP_EOL . $_POST["endYear"] . "-" . $_POST["endMonth"] . "-" . ($_POST["endDay"] + 1);
 	$off = $_POST["off"];
 	$dtsin[] = file("resetDates.txt"); 
-	if(!file_exists('archive/'.$_POST["startYear"].'/')) {
-		mkdir('archive/'.$_POST["startYear"]);
+	$year = (int)$dtsin[4];
+	
+	if(!file_exists('archive/'.$year.'/')) {
+		mkdir('archive/'.$year);
+	}
+	
+	if(!file_exists('archive/'.$year.'/comment/')) {
+		mkdir('archive/'.$year.'/comment/');
 	}
 	
 	//moves schedules to archive
-	copy('data/dataShiftsAA.json', 'archive/'.(int)$dtsin[4].'/dataShiftsAA.json');
-	copy('data/dataShiftsAB.json', 'archive/'.(int)$dtsin[4].'/dataShiftsAB.json');
-	copy('data/dataShiftsBA.json', 'archive/'.(int)$dtsin[4].'/dataShiftsBA.json');
-	copy('data/dataShiftsBB.json', 'archive/'.(int)$dtsin[4].'/dataShiftsBB.json');
-	copy('data/dataShiftsCA.json', 'archive/'.(int)$dtsin[4].'/dataShiftsCA.json');
-	copy('data/dataShiftsCB.json', 'archive/'.(int)$dtsin[4].'/dataShiftsCB.json');
-	copy('resetDates.txt', 'archive/'.(int)$dtsin[4].'/resetDates.txt');
+	copy('data/dataShiftsAA.json', 'archive/'.$year.'/dataShiftsAA.json');
+	copy('data/dataShiftsAB.json', 'archive/'.$year.'/dataShiftsAB.json');
+	copy('data/dataShiftsBA.json', 'archive/'.$year.'/dataShiftsBA.json');
+	copy('data/dataShiftsBB.json', 'archive/'.$year.'/dataShiftsBB.json');
+	copy('data/dataShiftsCA.json', 'archive/'.$year.'/dataShiftsCA.json');
+	copy('data/dataShiftsCB.json', 'archive/'.$year.'/dataShiftsCB.json');
+	copy('resetDates.txt', 'archive/'.$year.'/resetDates.txt');
+	
+	$files = scandir("comment/data");
+	foreach($files as $fname) {
+		if($fname != '.' && $fname != '..') {
+          rename('comment/data/'.$fname, 'archive/'.$year.'/comment/'.$fname);
+		}
+	}
 	
 	//clears dates file
 	ftruncate(fopen("resetDates.txt", "r+"), 0);
@@ -94,6 +107,6 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	//clears & resets page/timestamp
 	
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
-	header("refresh:0");
+	header("refresh:5");
 }
 ?>
