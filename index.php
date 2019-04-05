@@ -26,7 +26,7 @@ if (!isset($_GET["admin"])) {
 <body>
 	<h1>Troop 37 Tree Lot Signup</h1>
 	<div id="par">
-	<p>This is the website to sign up for tree lot shifts for 2018. On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
+	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Thank you!</p>
 	<!--<a href="delete/index.php">Request a shift deletion</a>-->
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
