@@ -19,17 +19,20 @@ if (authMain() == "admin") {
 <a href="adminAuth.php?view">View past years' shifts</a><br />
 <a href="adminAuth.php?signup">Sign up for new shifts</a><br />
 <a href="adminAuth.php?comment">View or add shift comments</a><br />
+<a href="adminAuth.php?delete">Manage shift deletions</a><br />
 <hr />
 	
 <?php
 if (isset($_GET["reset"])) {
-	echo '<iframe width="100%" height="85%"src="reset.php" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="84%"src="reset.php" style="border:0;"></iframe>';
 } else if (isset($_GET["view"])) {
-	echo '<iframe width="100%" height="85%"src="archive/index.php" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="84%"src="archive/index.php" style="border:0;"></iframe>';
 } else if (isset($_GET["signup"])) {
-	echo '<iframe width="100%" height="85%"src="index.php?admin" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="84%"src="index.php?admin" style="border:0;"></iframe>';
 } else if (isset($_GET["comment"])) {
-	echo '<iframe width="100%" height="85%"src="comment/index.php" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="84%"src="comment/index.php?admin" style="border:0;"></iframe>';
+} else if (isset($_GET["delete"])) {
+	echo '<iframe width="100%" height="84%"src="delete/index.php?admin" style="border:0;"></iframe>';
 }
 ?>
 </body>

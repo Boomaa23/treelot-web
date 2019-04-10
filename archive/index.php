@@ -32,12 +32,13 @@ if(isset($_POST["year"])) {
 $year = $_POST["year"];
 //reads existing signups from file
 if(file_exists($year. "/")) {
-	$dataAA = json_decode(file_get_contents($year.'/dataShiftsAA.json'));
-	$dataAB = json_decode(file_get_contents($year.'/dataShiftsAB.json'));
-	$dataBA = json_decode(file_get_contents($year.'/dataShiftsBA.json'));
-	$dataBB = json_decode(file_get_contents($year.'/dataShiftsBB.json'));
-	$dataCA = json_decode(file_get_contents($year.'/dataShiftsCA.json'));
-	$dataCB = json_decode(file_get_contents($year.'/dataShiftsCB.json'));
+	$handle = fopen($year."/data.json", "r+");
+	$data = array(array());
+	$linecount = 0;
+	while(!feof($handle)){
+		$data[$linecount] = json_decode(fgets($handle));
+		$linecount++;
+	}
 } else {
 	die ("There was a problem retrieving the shifts for your specified year");
 }
@@ -65,12 +66,12 @@ foreach ($period as $dt) {
 	echo '
 	<tr>
 	<td>' . $dt->format("l, m/d/Y\n").'</td>
-	<td><input type="text" name="AA[]" value="' . $dataAA[$wk] . '" id="dis" readonly><br>
-	<input type="text" name="AB[]" value="' . $dataAB[$wk] . '" id="dis" readonly><br></td>
-	<td><input type="text" name="BA[]" value="' . $dataBA[$wk] . '" id="dis" readonly><br>
-	<input type="text" name="BB[]" value="' . $dataBB[$wk] . '" id="dis" readonly><br></td>
-	<td><input type="text" name="CA[]" value="' . $dataCA[$wk] . '" id="dis" readonly><br>
-	<input type="text" name="CB[]" value="' . $dataCB[$wk] . '" id="dis" readonly><br></td>
+	<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" id="dis" readonly><br>
+	<input type="text" name="AB[]" value="' . $data[1][$wk] . '" id="dis" readonly><br></td>
+	<td><input type="text" name="BA[]" value="' . $data[2][$wk] . '" id="dis" readonly><br>
+	<input type="text" name="BB[]" value="' . $data[3][$wk] . '" id="dis" readonly><br></td>
+	<td><input type="text" name="CA[]" value="' . $data[4][$wk] . '" id="dis" readonly><br>
+	<input type="text" name="CB[]" value="' . $data[5][$wk] . '" id="dis" readonly><br></td>
 	</tr>';
 	$wk++;
 }
@@ -81,11 +82,11 @@ foreach ($period as $dt) {
 <br />
 <?php
 function trim_text($input, $length) {
-    if (strlen($input) <= $length)
-        return $input;
+  if (strlen($input) <= $length)
+      return $input;
 
-    $last_space = strrpos(substr($input, 0, $length), ' ');
-    return substr($input, 0, $last_space) . '...';
+  $last_space = strrpos(substr($input, 0, $length), ' ');
+  return substr($input, 0, $last_space) . '...';
 }
 
 $files = glob('data/*.txt', GLOB_BRACE);

@@ -1,29 +1,21 @@
 <?php
+if(!file_exists("timestamp.txt")) {
+	file_put_contents("timestamp.txt", null, FILE_APPEND);
+}
+
 if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
-	//clears shift data file
-	ftruncate(fopen("data/dataShiftsAA.json", "r+"), 0);
-	ftruncate(fopen("data/dataShiftsAB.json", "r+"), 0);
-	ftruncate(fopen("data/dataShiftsBA.json", "r+"), 0);
-	ftruncate(fopen("data/dataShiftsBB.json", "r+"), 0);
-	ftruncate(fopen("data/dataShiftsCA.json", "r+"), 0);
-	ftruncate(fopen("data/dataShiftsCB.json", "r+"), 0);
+	//clears shift data file and timestamp
+	if(file_exists("data.json")) { ftruncate(fopen("data.json", "r+"), 0); }
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
 	
 	//writes inputs from html to file
-    file_put_contents("data/dataShiftsAA.json", json_encode($_POST["AA"]), FILE_APPEND);
-	file_put_contents("data/dataShiftsAB.json", json_encode($_POST["AB"]), FILE_APPEND);
-	file_put_contents("data/dataShiftsBA.json", json_encode($_POST["BA"]), FILE_APPEND);
-	file_put_contents("data/dataShiftsBB.json", json_encode($_POST["BB"]), FILE_APPEND);
-	file_put_contents("data/dataShiftsCA.json", json_encode($_POST["CA"]), FILE_APPEND);
-	file_put_contents("data/dataShiftsCB.json", json_encode($_POST["CB"]), FILE_APPEND);
+	$data = json_encode($_POST["AA"]) . PHP_EOL . json_encode($_POST["AB"]) . PHP_EOL . 
+	json_encode($_POST["BA"]) . PHP_EOL . json_encode($_POST["BB"]) . PHP_EOL . 
+	json_encode($_POST["CA"]) . PHP_EOL . json_encode($_POST["CB"]);
+	file_put_contents("data.json", $data, FILE_APPEND);
 	
+	//writes new timestamp to file
 	file_put_contents("timestamp.txt", time() , FILE_APPEND | LOCK_EX);
-} else {
-	if(isset($_GET["admin"])) {
-		die('There was an error submitting your request. Please try again. <a href="index.php?admin">Back to main page</a>');
-	} else  {
-		die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
-	}
 }
 
 if(isset($_GET["admin"])) {

@@ -53,22 +53,29 @@ if (!isset($_GET["admin"])) {
 	</tr>
 	
 	<!--enter box fields-->
-	<form action="action.php?ts=<?php echo file_get_contents("timestamp.txt") . PHP_EOL; if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
+	<form action="action.php?ts=<?php if(file_exists("timestamp.txt")) { echo file_get_contents("timestamp.txt") . PHP_EOL; } if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 	<?php
 	//logs ip and time of access
 	/*
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$dateTime = date('m/d/Y G:i:s');
 	$date = $dateTime . " - " . $ip ;
-	file_put_contents("iplog.txt", $date . PHP_EOL, FILE_APPEND);*/
+	file_put_contents("iplog.txt", $date . PHP_EOL, FILE_APPEND);
+	*/
+	
+	//makes a data file if none exists
+	if(!file_exists("data.json")) {
+		file_put_contents("data.json", file_get_contents("basedata.json"), FILE_APPEND);
+	}
 	
 	//reads existing signups from file
-	$dataAA = json_decode(file_get_contents("data/dataShiftsAA.json"));
-	$dataAB = json_decode(file_get_contents("data/dataShiftsAB.json"));
-	$dataBA = json_decode(file_get_contents("data/dataShiftsBA.json"));
-	$dataBB = json_decode(file_get_contents("data/dataShiftsBB.json"));
-	$dataCA = json_decode(file_get_contents("data/dataShiftsCA.json"));
-	$dataCB = json_decode(file_get_contents("data/dataShiftsCB.json"));
+	$handle = fopen("data.json", "r+");
+	$data = array(array());
+	$linecount = 0;
+	while(!feof($handle)){
+		$data[$linecount] = json_decode(fgets($handle));
+		$linecount++;
+	}
 	
 	//read values from reset page
 	$dates = file("resetDates.txt");
@@ -78,46 +85,40 @@ if (!isset($_GET["admin"])) {
 	$end = new DateTime($dates[1]);
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
-	$wk=0;
-	$readAA = $readAB = $readBA = $readBB = $readCA = $readCB = null;
+	$wk = 0;
 
 	//setup of shift form boxes
 	foreach ($period as $dt) {
-		/*
-		if(!empty($dataAA[$wk]))
-			$readAA = "readonly";
-		if(!empty($dataAB[$wk]))
-			$readAB = "readonly";
-		if(!empty($dataBA[$wk]))
-			$readBA = "readonly";
-		if(!empty($dataBB[$wk]))
-			$readBB = "readonly";
-		if(!empty($dataCA[$wk]))
-			$readCA = "readonly";
-		if(!empty($dataCB[$wk]))
-			$readCB = "readonly";
-		*/
-		
+		//prevents modification of already filled slots
+		$read = array(array());
+		for($i = 0;$i <= 5;$i++) {
+			//$read[$i][$wk] = !empty($data[$i][$wk]) ? "readonly" : "";
+			//temporary workaround until deletion is implemented
+			for($j = 0;$j <= $wk;$j++) {
+				$read[$i][$j] = "";
+			}
+		}
+
 		//checks to disable weekend shifts
 		$wkCk = (int)$dates[2];
 		if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input type="text" name="AA[]" value="' . $dataAA[$wk] . '" ' . $readAA . '><br>
-			<input type="text" name="AB[]" value="' . $dataAB[$wk] . '" ' . $readAB . '><br></td>';
+			<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '><br>
+			<input type="text" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '><br></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input id="dis" type="text" name="AA[]" value="' . $dataAA[$wk] . '" readonly><br>
-			<input id="dis" type="text" name="AB[]" value="' . $dataAB[$wk] . '" readonly><br></td>';
+			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$wk] . '" readonly><br>
+			<input id="dis" type="text" name="AB[]" value="' . $data[1][$wk] . '" readonly><br></td>';
 		}
 		
 		//finishes input box setup
 		echo '
-		<td><input type="text" name="BA[]" value="' . $dataBA[$wk] . '" ' . $readBA . '><br>
-		<input type="text" name="BB[]" value="' . $dataBB[$wk] . '" ' . $readBB . '><br></td>
-		<td><input type="text" name="CA[]" value="' . $dataCA[$wk] . '" ' . $readCA . '><br>
-		<input type="text" name="CB[]" value="' . $dataCB[$wk] . '" ' . $readCB . '><br></td>
+		<td><input type="text" name="BA[]" value="' . $data[2][$wk] . '" ' . $read[2][$wk] . '><br>
+		<input type="text" name="BB[]" value="' . $data[3][$wk] . '" ' . $read[3][$wk] . '><br></td>
+		<td><input type="text" name="CA[]" value="' . $data[4][$wk] . '" ' . $read[4][$wk] . '><br>
+		<input type="text" name="CB[]" value="' . $data[5][$wk] . '" ' . $read[5][$wk] . '><br></td>
 		</tr>';
 		$wk++;
 	}

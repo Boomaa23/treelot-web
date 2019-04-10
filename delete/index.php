@@ -25,12 +25,13 @@
 <?php
 
 //reads existing signups from file
-$dataAA = json_decode(file_get_contents("../data/dataShiftsAA.json"));
-$dataAB = json_decode(file_get_contents("../data/dataShiftsAB.json"));
-$dataBA = json_decode(file_get_contents("../data/dataShiftsBA.json"));
-$dataBB = json_decode(file_get_contents("../data/dataShiftsBB.json"));
-$dataCA = json_decode(file_get_contents("../data/dataShiftsCA.json"));
-$dataCB = json_decode(file_get_contents("../data/dataShiftsCB.json"));
+$handle = fopen("../data.json", "r+");
+$data = array(array());
+$linecount = 0;
+while(!feof($handle)){
+	$data[$linecount] = json_decode(fgets($handle));
+	$linecount++;
+}
 
 //read values from reset page
 $dates = file("../resetDates.txt");
@@ -41,18 +42,22 @@ $end = new DateTime($dates[1]);
 $interval = DateInterval::createFromDateString('1 day');
 $period = new DatePeriod($begin, $interval, $end);
 $wk=0;
-$readAA = $readAB = $readBA = $readBB = $readCA = $readCB = false;
 
 //setup of shift form boxes
 foreach ($period as $dt) {
+	//prevents deletion of empty slots
+	$read = array(array());
+	for($i = 0;$i <= 5;$i++) {
+		$read[$i][$wk] = empty($data[$i][$wk]) ? "disabled" : "";
+	}
 	
 	//checks to disable weekend shifts
 	$wkCk = (int)$dates[2];
 	if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-		<td><input type="checkbox" name="AA[]" value="">' . $dataAA[$wk] . '<br>
-		<input type="checkbox" name="AB[]" value="">' . $dataAB[$wk] . '<br></td>';
+		<td><input type="checkbox" name="AA[]"  value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '>' . $data[0][$wk] . '<br>
+		<input type="checkbox" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '>' . $data[1][$wk] . '<br></td>';
 	} else {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
@@ -61,10 +66,10 @@ foreach ($period as $dt) {
 	
 	//finishes input box setup
 	echo '
-	<td><input type="checkbox" name="BA[]">' . $dataBA[$wk] . '<br>
-	<input type="checkbox" name="BB[]">' . $dataBB[$wk] . '<br></td>
-	<td><input type="checkbox" name="CA[]">' . $dataCA[$wk] . '<br>
-	<input type="checkbox" name="CB[]">' . $dataCB[$wk] . '<br></td>
+	<td><input type="checkbox" name="BA[]" value="' . $data[2][$wk] . '" ' . $read[2][$wk] . '>' . $data[2][$wk] . '<br>
+	<input type="checkbox" name="BB[]" value="' . $data[3][$wk] . '" ' . $read[3][$wk] . '>' . $data[3][$wk] . '<br></td>
+	<td><input type="checkbox" name="CA[]" value="' . $data[4][$wk] . '" ' . $read[4][$wk] . '>' . $data[4][$wk] . '<br>
+	<input type="checkbox" name="CB[]" value="' . $data[5][$wk] . '" ' . $read[5][$wk] . '>' . $data[5][$wk] . '<br></td>
 	</tr>';
 	$wk++;
 	
