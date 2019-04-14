@@ -26,9 +26,9 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	<a><b>Select a date:</b></a>
 	<table><tr>
 	<?php
-	$dates = file("../resetDates.txt");
-	$begin = new DateTime($dates[0]);
-	$end = new DateTime($dates[1]);
+	$dates = json_decode(file_get_contents("../resetDates.json"));
+	$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
+	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$wk = 1;

@@ -34,7 +34,7 @@ if (!isset($_GET["admin"])) {
 	<?php 
 		$files = glob('comment/data/*.txt', GLOB_BRACE);
 		foreach($files as $file) {
-			$fileArray = file("$file");
+			$fileArray = file($file);
 			$dir_file = str_replace("data/", "", $file);
 			$dir_file = str_replace(".txt", "", $dir_file);
 			if(trim($fileArray[1]) == date("n/d/Y",time())) {
@@ -65,7 +65,7 @@ if (!isset($_GET["admin"])) {
 	
 	//makes a data file if none exists
 	if(!file_exists("data.json")) {
-		file_put_contents("data.json", file_get_contents("basedata.json"), FILE_APPEND);
+		copy('basedata.json', 'data.json');
 	}
 	
 	//reads existing signups from file
@@ -78,11 +78,11 @@ if (!isset($_GET["admin"])) {
 	}
 	
 	//read values from reset page
-	$dates = file("resetDates.txt");
+	$dates = json_decode(file_get_contents("resetDates.json"));
 	
 	//setup of date counter
-	$begin = new DateTime($dates[0]);
-	$end = new DateTime($dates[1]);
+	$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
+	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$wk = 0;
@@ -99,8 +99,8 @@ if (!isset($_GET["admin"])) {
 			}
 		}
 
-		//checks to disable weekend shifts
-		$wkCk = (int)$dates[2];
+		//checks to disable weekday shifts
+		$wkCk = (int)$dates[6];
 		if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>

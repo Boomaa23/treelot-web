@@ -34,11 +34,11 @@ while(!feof($handle)){
 }
 
 //read values from reset page
-$dates = file("../resetDates.txt");
+$dates = json_decode(file_get_contents("../resetDates.json"));
 
 //setup of date counter
-$begin = new DateTime($dates[0]);
-$end = new DateTime($dates[1]);
+$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
+$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
 $interval = DateInterval::createFromDateString('1 day');
 $period = new DatePeriod($begin, $interval, $end);
 $wk=0;
@@ -51,8 +51,8 @@ foreach ($period as $dt) {
 		$read[$i][$wk] = empty($data[$i][$wk]) ? "disabled" : "";
 	}
 	
-	//checks to disable weekend shifts
-	$wkCk = (int)$dates[2];
+	//checks to disable weekday shifts
+	$wkCk = (int)$dates[6];
 	if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>

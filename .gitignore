@@ -1,2 +1,6 @@
 data.json
 timestamp.txt
+resetDates.json
+archive/*
+!archive/index.php
+allcomments.json

@@ -25,26 +25,31 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 <div id="content"><hr /></div>
 
 <?php
-function trim_text($input, $length) {
-    if (strlen($input) <= $length)
-        return $input;
+	function trim_text($input, $length) {
+	    if (strlen($input) <= $length)
+	        return $input;
 
-    $last_space = strrpos(substr($input, 0, $length), ' ');
-    return substr($input, 0, $last_space) . '...';
-}
+	    $last_space = strrpos(substr($input, 0, $length), ' ');
+	    return substr($input, 0, $last_space) . '...';
+	}
 
-$files = glob('data/*.txt', GLOB_BRACE);
-foreach($files as $file) {
-	$fileArray = file("$file");
-	$dir_file = str_replace("data/", "", $file);
-	$dir_file = str_replace(".txt", "", $dir_file);
-	echo '<a id="nostyle" href="view.php?file=' . $dir_file . '&src=current"><div id="title">' . trim_text($fileArray[3] . ' - ' . $fileArray[0],70);
-	echo '</div><div id="date">' . $fileArray[1];
-	echo '</div><br><div id="content">' . trim_text($fileArray[2],500);
-	echo "</a><hr /></div>";
-}
-?>
-<br />
+	//reads existing signups from file
+	$handle = fopen("allcomments.json", "r+");
+	$data = array(array());
+	$linecount = 0;
+	while(!feof($handle)){
+		$data[$linecount] = json_decode(fgets($handle));
+		$linecount++;
+	}
+
+	for($i = 0;$i < $linecount;$i++) {
+		echo '<a id="nostyle" href="view.php?line=' . $i . '&src=current"><div id="title">' . trim_text($data[$i][3] . ' - ' . $data[$i][0],70);
+		echo '</div><div id="date">' . $data[$i][1];
+		echo '</div><br><div id="content">' . trim_text($data[$i][2],500);
+		echo "</a><hr /></div>";
+	}
+	?>
+	<br />
 </body>
 </html>
 

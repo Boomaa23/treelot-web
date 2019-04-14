@@ -4,9 +4,8 @@ function generateRandomString($length = 8) {
 }
 
 if(isset($_POST["date"]) && isset($_POST["comment"])) {
-	$filename = generateRandomString();
-    file_put_contents("data/" . $filename . ".txt", $_POST["title"] . PHP_EOL . $_POST["date"] . PHP_EOL . $_POST["comment"] . PHP_EOL . $_POST["name"], FILE_APPEND);
-	
+  $data = array($_POST["title"], $_POST["date"], $_POST["comment"], $_POST["name"], generateRandomString());
+  file_put_contents("allcomments.json", json_encode($data) . PHP_EOL, FILE_APPEND);
 } else {
 	die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
 }
