@@ -30,6 +30,7 @@ if (!isset($_GET["admin"])) {
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Thank you!</p>
 	<!--<a href="delete/index.php">Request a shift deletion</a>-->
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
+	<button><a href="delete/index.php" id="nostyle"><b>Request a shift deletion</b></a></button>
 	<p>Comments for today: <?php echo(date("n/d/Y",time())); ?></p>
 	<?php 
 		$files = glob('comment/data/*.txt', GLOB_BRACE);

@@ -19,7 +19,7 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 
 <body>
 <h2 style="text-align:center;">Troop 37 Shift Comments Viewer</h2>
-<p style="text-align:center;">This is a page to view or add any comments or concerns you may have about a specific shift. For example, if you want an older scout to accompany your younger scout to a shift, please type as such here. Some comments may be shortened, so you can click on any one to view the full length.</p>
+<p style="text-align:center;margin:0 20% 0 20%;">This is a page to view or add any comments or concerns you may have about a specific shift. For example, if you want an older scout to accompany your younger scout to a shift, please type as such here. Some comments may be shortened, so you can click on any one to view the full length.</p>
 <p style="text-align:center;"><button><a href="add.php" id="nostyle"><b>Add a Comment</b></a></button>
 <button><a href="../index.php<?php if(authCheck()) {echo "?admin";} ?>" id="nostyle"><b>Back to main page</b></a></button></p>
 <div id="content"><hr /></div>
@@ -43,10 +43,12 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	}
 
 	for($i = 0;$i < $linecount;$i++) {
-		echo '<a id="nostyle" href="view.php?line=' . $i . '&src=current"><div id="title">' . trim_text($data[$i][3] . ' - ' . $data[$i][0],70);
-		echo '</div><div id="date">' . $data[$i][1];
-		echo '</div><br><div id="content">' . trim_text($data[$i][2],500);
-		echo "</a><hr /></div>";
+		if($data[$i] != "") {
+			echo '<a id="nostyle" href="view.php?line=' . $i . '&src=current"><div id="title">' . trim_text($data[$i][3] . ' - ' . $data[$i][0],70);
+			echo '</div><div id="date">' . $data[$i][1];
+			echo '</div><br><div id="content">' . trim_text($data[$i][2],500);
+			echo "</a><hr /></div>";
+		}
 	}
 	?>
 	<br />

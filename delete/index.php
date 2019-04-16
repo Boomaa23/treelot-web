@@ -41,7 +41,7 @@ $begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
 $end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
 $interval = DateInterval::createFromDateString('1 day');
 $period = new DatePeriod($begin, $interval, $end);
-$wk=0;
+$wk = 0;
 
 //setup of shift form boxes
 foreach ($period as $dt) {
@@ -52,12 +52,12 @@ foreach ($period as $dt) {
 	}
 	
 	//checks to disable weekday shifts
-	$wkCk = (int)$dates[6];
-	if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
+	$wkCk = (int) ($dates[6]);
+	if ($wk % 7 == $wkCk || $wk % 7 == $wkCk + 1) {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-		<td><input type="checkbox" name="AA[]"  value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '>' . $data[0][$wk] . '<br>
-		<input type="checkbox" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '>' . $data[1][$wk] . '<br></td>';
+		<td><input type="checkbox" name="val[]"  value="0-' . $wk . '" ' . $read[0][$wk] . '>' . $data[0][$wk] . '<br>
+		<input type="checkbox" name="val[]" value="1-' . $wk . '" ' . $read[1][$wk] . '>' . $data[1][$wk] . '<br></td>';
 	} else {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
@@ -66,10 +66,10 @@ foreach ($period as $dt) {
 	
 	//finishes input box setup
 	echo '
-	<td><input type="checkbox" name="BA[]" value="' . $data[2][$wk] . '" ' . $read[2][$wk] . '>' . $data[2][$wk] . '<br>
-	<input type="checkbox" name="BB[]" value="' . $data[3][$wk] . '" ' . $read[3][$wk] . '>' . $data[3][$wk] . '<br></td>
-	<td><input type="checkbox" name="CA[]" value="' . $data[4][$wk] . '" ' . $read[4][$wk] . '>' . $data[4][$wk] . '<br>
-	<input type="checkbox" name="CB[]" value="' . $data[5][$wk] . '" ' . $read[5][$wk] . '>' . $data[5][$wk] . '<br></td>
+	<td><input type="checkbox" name="val[]" value="2-' . $wk . '" ' . $read[2][$wk] . '>' . $data[2][$wk] . '<br>
+	<input type="checkbox" name="val[]" value="3-' . $wk . '" ' . $read[3][$wk] . '>' . $data[3][$wk] . '<br></td>
+	<td><input type="checkbox" name="val[]" value="4-' . $wk . '" ' . $read[4][$wk] . '>' . $data[4][$wk] . '<br>
+	<input type="checkbox" name="val[]" value="5-' . $wk . '" ' . $read[5][$wk] . '>' . $data[5][$wk] . '<br></td>
 	</tr>';
 	$wk++;
 	
