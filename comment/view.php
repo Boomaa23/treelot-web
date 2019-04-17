@@ -20,10 +20,17 @@ if(isset($_GET["line"]) && isset($_GET["src"])) {
 		$linecount++;
 	}
 	
-	echo '<div id="title">' . $file[$_GET["line"]][3] . ' - '. $file[$_GET["line"]][0] . '</div>
-	<div id="date">' . $file[$_GET["line"]][1] . '</div><br>
-	<div id="content">' . $file[$_GET["line"]][2] . '</div>';
-	echo '<br><button value=""><a href="index.php" id="nostyle">Back to comment viewer</a></button>';
+	echo '<div id="title">' . $file[$_GET["line"]][4] . ' - '. $file[$_GET["line"]][0] . '</div>
+	<div id="date">' . $file[$_GET["line"]][1] . ' | ' . $file[$_GET["line"]][2] . '</div><br>
+	<div id="content">' . $file[$_GET["line"]][3] . '</div>';
+	$redir = "index.php";
+	if($_GET["src"] == "main") {
+		$redir = "../" . $redir;
+	}
+	if(isset($_GET["admin"])) {
+		$redir = $redir . "&admin";
+	}
+	echo '<br><button value="" onclick="parent.window.location.reload();"><a href="' . $redir . '" id="nostyle">Back to previous page</a></button>';
 } else {
 	die('There was an error submitting your request. Please try again. <a href="index.php">Back to main page</a>');
 }

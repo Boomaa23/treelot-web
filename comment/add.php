@@ -34,7 +34,7 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	$wk = 1;
 	
 	foreach ($period as $dt) {
-		echo '<td><input type="radio" name="date" value = ' . $dt->format("m/d/Y\n") . ' required></td><td>' . $dt->format("l, m/d/Y\n") . '</td>';
+		echo '<td><input type="radio" name="date" value=' . $dt->format("m/d/Y\n") . ' required></td><td>' . $dt->format("l, m/d/Y\n") . '</td>';
 		if($wk%3 == 0) {
 			echo '</tr><tr>';
 		}
@@ -42,6 +42,13 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 	}
 	?>
 	</table><br />
+	
+	<a><b>Select a Shift</a></b><br />
+		<input type="radio" name="time" value='9am-1pm' required><a>9am-1pm (Weekends Only)</a><br />
+		<input type="radio" name="time" value='1pm/3pm-5pm' required><a>1pm/3pm-5pm (Weekends/Weekdays)</a><br />
+		<input type="radio" name="time" value='5pm-9pm' required><a>5pm-9pm</a><br />
+	<br />
+	
 	<a><b>Title your comment</a></b><br />
 	<input type="text" style="width:300px;" name="title" required>
 	<br /><br />

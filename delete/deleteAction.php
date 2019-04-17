@@ -40,8 +40,8 @@ if(isset($_POST["confirm"])) {
 }
 
 if(isset($_GET["admin"])) {
-header("refresh:10;url=index.php?admin");
+header("refresh:0;url=index.php?admin");
 } else {
-header("refresh:10;url=index.php");
+header("refresh:0;url=index.php");
 }
 ?>

@@ -31,15 +31,21 @@ if (!isset($_GET["admin"])) {
 	<!--<a href="delete/index.php">Request a shift deletion</a>-->
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
 	<button><a href="delete/index.php" id="nostyle"><b>Request a shift deletion</b></a></button>
-	<p>Comments for today: <?php echo(date("n/d/Y",time())); ?></p>
 	<?php 
-		$files = glob('comment/data/*.txt', GLOB_BRACE);
-		foreach($files as $file) {
-			$fileArray = file($file);
-			$dir_file = str_replace("data/", "", $file);
-			$dir_file = str_replace(".txt", "", $dir_file);
-			if(trim($fileArray[1]) == date("n/d/Y",time())) {
-				echo '<b>' . $fileArray[3] . ' - ' . $fileArray[0] . ': </b>' . $fileArray[2] . '<br>';
+		$date = date("n/d/Y",time());
+		echo '<p>Comments for today: ' . $date . '</p>';
+		$handle = fopen("comment/allcomments.json", "r+");
+		$file = array(array());
+		for($l = 0;!feof($handle);$l++) {
+			$file[$l] = json_decode(fgets($handle));
+		}
+		$max = sizeof($file) > 6 ? 6 : sizeof($file);
+		for($i = 0;$i < $max;$i++) {
+			if($i % 3 == 0) {
+				echo '<br />';
+			}
+			if(!is_null($file[$i]) && $file[$i][1] == $date) {
+				echo '<a href="comment/view.php?line=' . $i . '&src=main">' . $file[$i][4] . ' - ' . $file[$i][0] . ' (' . $file[$i][2] . ')</a> &nbsp&nbsp';
 			}
 		}
 	?>
