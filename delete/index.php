@@ -21,7 +21,7 @@
 </tr>
 
 <!--enter box fields-->
-<form action="deleteAction.php?ts=<?php echo file_get_contents("../timestamp.txt") . PHP_EOL; if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
+<form action="deleteInterface.php?ts=<?php echo file_get_contents("../timestamp.txt") . PHP_EOL; if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 <?php
 
 //reads existing signups from file

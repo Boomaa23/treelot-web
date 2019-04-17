@@ -93,11 +93,7 @@ if (!isset($_GET["admin"])) {
 		//prevents modification of already filled slots
 		$read = array(array());
 		for($i = 0;$i <= 5;$i++) {
-			//$read[$i][$wk] = !empty($data[$i][$wk]) ? "readonly" : "";
-			//temporary workaround until deletion is implemented
-			for($j = 0;$j <= $wk;$j++) {
-				$read[$i][$j] = "";
-			}
+			$read[$i][$wk] = !empty($data[$i][$wk]) ? 'id="dis" readonly' : "";
 		}
 
 		//checks to disable weekday shifts
