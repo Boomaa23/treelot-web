@@ -11,7 +11,7 @@
 
 <body>
 <h1>TR37 Shift Deletion Request</h1>
-<p>If you have changed your mind about a certain shift, you can select all of them which you want to change here. This will automatically delete them from the shift signup.</p>
+<p>If you have changed your mind about a certain shift, you can select the one you want to remove here and it will be deleted from the shift signup.</p>
 <table cellspacing="0" cellpadding="5" align="center">
 <tr> <!--times-->
 	<th></th>
@@ -56,8 +56,8 @@ foreach ($period as $dt) {
 	if ($wk % 7 == $wkCk || $wk % 7 == $wkCk + 1) {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-		<td><input type="checkbox" name="val[]"  value="0-' . $wk . '" ' . $read[0][$wk] . '>' . $data[0][$wk] . '<br>
-		<input type="checkbox" name="val[]" value="1-' . $wk . '" ' . $read[1][$wk] . '>' . $data[1][$wk] . '<br></td>';
+		<td><input type="radio" name="loc"  value="0-' . $wk . '" ' . $read[0][$wk] . '>' . $data[0][$wk] . '<br>
+		<input type="radio" name="loc" value="1-' . $wk . '" ' . $read[1][$wk] . '>' . $data[1][$wk] . '<br></td>';
 	} else {
 		echo '
 		<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
@@ -66,10 +66,10 @@ foreach ($period as $dt) {
 	
 	//finishes input box setup
 	echo '
-	<td><input type="checkbox" name="val[]" value="2-' . $wk . '" ' . $read[2][$wk] . '>' . $data[2][$wk] . '<br>
-	<input type="checkbox" name="val[]" value="3-' . $wk . '" ' . $read[3][$wk] . '>' . $data[3][$wk] . '<br></td>
-	<td><input type="checkbox" name="val[]" value="4-' . $wk . '" ' . $read[4][$wk] . '>' . $data[4][$wk] . '<br>
-	<input type="checkbox" name="val[]" value="5-' . $wk . '" ' . $read[5][$wk] . '>' . $data[5][$wk] . '<br></td>
+	<td><input type="radio" name="loc" value="2-' . $wk . '" ' . $read[2][$wk] . '>' . $data[2][$wk] . '<br>
+	<input type="radio" name="loc" value="3-' . $wk . '" ' . $read[3][$wk] . '>' . $data[3][$wk] . '<br></td>
+	<td><input type="radio" name="loc" value="4-' . $wk . '" ' . $read[4][$wk] . '>' . $data[4][$wk] . '<br>
+	<input type="radio" name="loc" value="5-' . $wk . '" ' . $read[5][$wk] . '>' . $data[5][$wk] . '<br></td>
 	</tr>';
 	$wk++;
 	

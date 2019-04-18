@@ -10,15 +10,11 @@ if(isset($_POST["confirm"])) {
 	}
 
 	//checks for correct entered value
-	for($i = 0;$i < sizeof($_POST["cval"]);$i++) {
-		$val = $_POST["cval"][$i];
-		$j = $_POST["ival"][$i];
-		if($_POST["confirm"][$i] == $data[$val[$j]{0}][(int)(substr($val[$j], 2, strlen($val[$j]) - 1))]) {
-			$data[$val[$i]{0}][(int)(substr($val[$i], 2, strlen($val[$i]) - 1))] = "";
-		} else {
-			echo '<a>The scout name <b>' . $_POST["confirm"][$i] . '</b> did not match the correct scout name of <b>' . $data[$val[$j]{0}][(int)(substr($val[$j], 2, strlen($val[$j]) - 1))];
-			echo '</b><br /><a>You will be redirected in </a><span id="seconds">10</span> <a> seconds</a><script src="redirect.js" type="text/javascript"></script>';
-		}
+	if(trim($_POST["confirm"]) == trim($data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))])) {
+		$data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))] = "";
+	} else {
+		echo '<a>The scout name <b>' . $_POST["confirm"] . '</b> did not match the correct scout name of <b>' . $data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))];
+		die('</b><br /><a>You will be redirected in </a><span id="seconds">10</span> <a> seconds</a><script src="redirect.js" type="text/javascript"></script>');
 	}
 
 	//clears old shift data file
