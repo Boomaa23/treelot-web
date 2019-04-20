@@ -21,9 +21,30 @@
 </tr>
 
 <!--enter box fields-->
-<form action="deleteInterface.php?ts=<?php echo file_get_contents("../timestamp.txt") . PHP_EOL; if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 <?php
+if(isset($_GET['confirm'])) {
+	if($_GET["ts"] == file_get_contents("../timestamp.txt") && isset($_POST["loc"])) {
+		//gets shift data from file
+		$handle = fopen("../data.json", "r+");
+		$data = array(array());
+		for($l = 0;!feof($handle);$l++) {
+			$data[$l] = json_decode(fgets($handle));
+		}
+		
+		//removes selected value from internal data
+		$loc = trim($data[$_POST["loc"]{0}][(int)(substr($_POST["loc"], 2, strlen($_POST["loc"]) - 1))]);
+		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . '" method="post"><a><b>Confirm the scout to remove is correct</b></a><br />';
+		echo $loc . '&nbsp&nbsp<input type="text" name="confirm"></input>&nbsp&nbsp<input type="submit"></form><br /><br />';
+	} else {
+		if(isset($_GET["admin"])) {
+			header("refresh:0;url=index.php?admin");
+		} else {
+			header("refresh:0;url=index.php");
+		}
+	}
+}
 
+echo '<form action="' . $_SERVER['PHP_SELF'] . '?ts=' . file_get_contents("../timestamp.txt") . PHP_EOL . '&confirm" method="post">';
 //reads existing signups from file
 $handle = fopen("../data.json", "r+");
 $data = array(array());

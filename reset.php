@@ -16,7 +16,7 @@ if (authMain() != "admin") {
 </head>
 
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?success" method="post">
 <h2>TR37 Shift Reset & Backup</h2>
 <p>Used annually to reset everything after each year's Tree Lot is over.<br /> Automatically backs up old shifts for viewing.</p>
 <?php $dtsin = json_decode(file_get_contents("resetDates.json")); ?>
@@ -43,12 +43,15 @@ if (authMain() != "admin") {
 </table><br />
 	<a>Offset (# of days the starting day is from a Saturday): </a>
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br /><br />
-	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset everything?')">
+	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
 </form>
 </body>
 </html>
 
 <?php
+if(isset($_GET["success"])) {
+	echo 'Reset succeeded - new signups ready';
+}
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	//init for inputs & archive
 	$dtsin[] = json_decode(file_get_contents("resetDates.json")); 

@@ -84,6 +84,7 @@ if (!isset($_GET["admin"])) {
 		$linecount++;
 	}
 	
+	
 	//read values from reset page
 	$dates = json_decode(file_get_contents("resetDates.json"));
 	
@@ -93,7 +94,7 @@ if (!isset($_GET["admin"])) {
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$wk = 0;
-
+	
 	//setup of shift form boxes
 	foreach ($period as $dt) {
 		//prevents modification of already filled slots
