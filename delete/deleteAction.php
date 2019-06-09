@@ -11,6 +11,13 @@ if(isset($_POST["confirm"])) {
 
 	//checks for correct entered value
 	if(trim($_POST["confirm"]) == trim($data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))])) {
+		$loc = trim($data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))]);
+		$rawrtn = file_get_contents("https://httpbin.org/ip");
+		$rtnip = json_decode($rawrtn)->origin;
+		$allip = explode (", ", $rtnip);
+		$removed = array("name" => $loc, "shiftlocation" => $_GET["loc"]{0} . "-" . substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1),
+			"accessed" => date("m-d-Y H:i:s T"), "ip" => $allip[sizeof($allip) - 1]);
+		file_put_contents("removelog.json", json_encode($removed) . PHP_EOL, FILE_APPEND);
 		$data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))] = "";
 	} else {
 		echo '<a>The scout name <b>' . $_POST["confirm"] . '</b> did not match the correct scout name of <b>' . $data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))];
@@ -36,8 +43,8 @@ if(isset($_POST["confirm"])) {
 }
 
 if(isset($_GET["admin"])) {
-header("refresh:0;url=index.php?admin");
+	header("refresh:0;url=index.php?admin");
 } else {
-header("refresh:0;url=index.php");
+	header("refresh:0;url=index.php");
 }
 ?>

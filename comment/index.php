@@ -9,12 +9,7 @@ if ((authMain() != "admin") && (authMain() != "user")) {
 <head>
 <title>TR37 Tree Lot | Shift Comments</title>
 <link rel="icon" href="../favicon.png">
-<style>
-	body {margin-left:20px;font-family:"Arial";}
-	#title {font-weight:bold;font-size:28px;}
-	#date {font-size:20px;}
-	#nostyle {text-decoration:none;color:black;}
-</style>
+<link rel="stylesheet" type="text/css" href="commentstyle.css">
 </head>
 
 <body>

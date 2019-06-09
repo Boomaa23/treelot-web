@@ -1,9 +1,4 @@
-<style>
-	#title {font-weight:bold;font-size:28px;}
-	#date {font-size:20px;}
-	#nostyle {text-decoration:none;color:black;}
-	body{font-family:Arial;margin-left:20px;}
-</style>
+<link rel="stylesheet" type="text/css" href="commentstyle.css">
 
 <?php
 if(isset($_GET["line"]) && isset($_GET["src"])) {

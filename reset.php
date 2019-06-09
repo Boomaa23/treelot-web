@@ -65,11 +65,13 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	copy('data.json', 'archive/' . $year . '/data.json');
 	copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
 	copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
+	copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
 	
 	//clears old files
 	ftruncate(fopen("resetDates.json", "r+"), 0);
 	ftruncate(fopen("data.json", "r+"), 0);
 	ftruncate(fopen("comment/allcomments.json", "r+"), 0);
+	ftruncate(fopen("delete/removelog.json", "r+"), 0);
 	
 	//puts dates into data file
 	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);

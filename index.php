@@ -27,13 +27,13 @@ if (!isset($_GET["admin"])) {
 	<h1>Troop 37 Tree Lot Signup</h1>
 	<div id="par">
 	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
-	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Thank you!</p>
-	<!--<a href="delete/index.php">Request a shift deletion</a>-->
+	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
-	<button><a href="delete/index.php" id="nostyle"><b>Request a shift deletion</b></a></button>
+	<!-- If you've snooped around enough to be reading this and want to delete a shift, go to /delete -->
+	<!-- <button><a href="delete/index.php" id="nostyle"><b>Request a shift deletion</b></a></button> -->
 	<?php 
-		$date = date("n/d/Y",time());
-		echo '<p>Comments for today: ' . $date . '</p>';
+		$date = date("m/d/Y",time());
+		echo '<p style="margin-bottom:0;">Comments for today: ' . $date . '</p>';
 		$handle = fopen("comment/allcomments.json", "r+");
 		$file = array(array());
 		for($l = 0;!feof($handle);$l++) {
@@ -41,7 +41,7 @@ if (!isset($_GET["admin"])) {
 		}
 		$max = sizeof($file) > 6 ? 6 : sizeof($file);
 		for($i = 0;$i < $max;$i++) {
-			if($i % 3 == 0) {
+			if($i % 3 == 0 && !is_null($file[$i])) {
 				echo '<br />';
 			}
 			if(!is_null($file[$i]) && $file[$i][1] == $date) {
@@ -62,13 +62,6 @@ if (!isset($_GET["admin"])) {
 	<!--enter box fields-->
 	<form action="action.php?ts=<?php if(file_exists("timestamp.txt")) { echo file_get_contents("timestamp.txt") . PHP_EOL; } if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 	<?php
-	//logs ip and time of access
-	/*
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$dateTime = date('m/d/Y G:i:s');
-	$date = $dateTime . " - " . $ip ;
-	file_put_contents("iplog.txt", $date . PHP_EOL, FILE_APPEND);
-	*/
 	
 	//makes a data file if none exists
 	if(!file_exists("data.json")) {

@@ -8,6 +8,7 @@ if (authMain() != "admin") {
 <html>
 <head>
 	<title>TR37 Tree Lot | Archive Viewer</title>
+	<link rel="stylesheet" type="text/css" href="../comment/commentstyle.css">
 	<link rel="icon" href="../favicon.png">
 	<style>
 		th, td {border:1px solid grey; text-align:center;}
@@ -21,15 +22,16 @@ if (authMain() != "admin") {
 	<p>Used to view the shift signups from previous years.</p>
 
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-		<input type="number" id="year" name="year" min="2000" required></td>
+		<input type="number" id="year" name="year" min="2000" value="<?php if(isset($_POST["year"])) { echo $_POST["year"]; } ?>" required></td>
 		<input type="submit" value="Submit">
 	</form>
 
 	<form>
-	<table cellspacing="0" cellpadding="5" align="center">
 	<?php
 	if(isset($_POST["year"])) {
 	$year = $_POST["year"];
+	echo '<h2><i>' . $year . ' Shifts</i></h2><table cellspacing="0" cellpadding="5" align="center">';
+	
 	//reads existing signups from file
 	if(file_exists($year. "/")) {
 		$handle = fopen($year."/data.json", "r+");
@@ -75,30 +77,34 @@ if (authMain() != "admin") {
 		</tr>';
 		$wk++;
 	}
-	}
-	?>
+	echo '
 	</table>
 	</form>
-	<br />
-	<?php
+	<h2><i>' . $year . ' Comments</i></h2>';
+	
+	$handle = fopen($year . "/allcomments.json", "r+");
+	$data = array(array());
+	$linecount = 0;
+	while(!feof($handle)){
+		$data[$linecount] = json_decode(fgets($handle));
+		$linecount++;
+	}
+
+	for($i = 0;$i < $linecount;$i++) {
+		if($data[$i] != "") {
+			echo '<a id="nostyle" href="view.php?line=' . $i . '&src=current"><div id="title">' . trim_text($data[$i][4] . ' - ' . $data[$i][0],70);
+			echo '</div><div id="date">' . $data[$i][1] . ' | ' . $data[$i][2];
+			echo '</div><br><div id="content">' . trim_text($data[$i][3],500);
+			echo "</a><hr /></div>";
+		}
+	}
+	}
 	function trim_text($input, $length) {
 	  if (strlen($input) <= $length)
 	      return $input;
 
 	  $last_space = strrpos(substr($input, 0, $length), ' ');
 	  return substr($input, 0, $last_space) . '...';
-	}
-
-	$files = glob('data/*.txt', GLOB_BRACE);
-	foreach($files as $file) {
-		$fileArray = file("$file");
-		echo $file;
-		$dir_file = str_replace('archive/'.$year.'comment/', "", $file);
-		$dir_file = str_replace(".txt", "", $dir_file);
-		echo '<a id="nostyle" href="../comment/view.php?file=' . $dir_file . '&src=archive&year=' . $year.'"><div id="title">' . trim_text($fileArray[0],70);
-		echo '</div><div id="date">' . $fileArray[1];
-		echo '</div><br><div id="content">' . trim_text($fileArray[2],500);
-		echo "</a><hr /></div>";
 	}
 	?>
 </body>
