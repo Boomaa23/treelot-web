@@ -16,7 +16,7 @@ if (authMain() != "admin") {
 </head>
 
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?success" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?dest=main" method="post">
 <h2>TR37 Shift Reset & Backup</h2>
 <p>Used annually to reset everything after each year's Tree Lot is over.<br /> Automatically backs up old shifts for viewing.</p>
 <?php $dtsin = json_decode(file_get_contents("resetDates.json")); ?>
@@ -44,14 +44,25 @@ if (authMain() != "admin") {
 	<a>Offset (# of days the starting day is from a Saturday): </a>
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br /><br />
 	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
+</form><br />
+
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?dest=requests" method="post">
+	<a>Use deletion requests (shift deletions must be approved by an admin): </a>
+	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo trim(file_get_contents("delete/requests.pref")) === "true" ? 'checked="checked"' : ""; ?>>Yes</input>
+	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo trim(file_get_contents("delete/requests.pref")) === "false" ? 'checked="checked"' : ""; ?>>No</input><br /><br />
+	<input type="submit" value="Submit">
 </form>
 </body>
 </html>
 
 <?php
-if(isset($_GET["success"])) {
+if(isset($_GET["dest"]) && $_GET["dest"] === "main") {
 	echo 'Reset succeeded - new signups ready';
+} else if(isset($_GET["dest"]) && $_GET["dest"] === "requests") {
+	file_put_contents("delete/requests.pref", $_POST["request_delete"]);
+	echo 'Deletion request usage changed successfully' . '<br />' . '(selector above will not be updated - this is fine)';
 }
+
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	//init for inputs & archive
 	$dtsin[] = json_decode(file_get_contents("resetDates.json")); 

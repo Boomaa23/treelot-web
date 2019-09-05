@@ -12,6 +12,7 @@
 <body>
 <h1>TR37 Shift Deletion Request</h1>
 <p>If you have changed your mind about a certain shift, you can select the one you want to remove here and it will be deleted from the shift signup.</p>
+<?php echo trim(file_get_contents("requests.pref")) === "true" ? '<b>Note:</b> shift deletions will be requested to an admin and must be approved before removal' : ''; ?>
 <table cellspacing="0" cellpadding="5" align="center">
 <tr> <!--times-->
 	<th></th>
@@ -22,7 +23,7 @@
 
 <!--enter box fields-->
 <?php
-if(isset($_GET['confirm'])) {
+if(isset($_GET['confirm']) || isset($_GET['request'])) {
 	if($_GET["ts"] == file_get_contents("../timestamp.txt") && isset($_POST["loc"])) {
 		//gets shift data from file
 		$handle = fopen("../data.json", "r+");
@@ -33,7 +34,8 @@ if(isset($_GET['confirm'])) {
 		
 		//removes selected value from internal data
 		$loc = trim($data[$_POST["loc"]{0}][(int)(substr($_POST["loc"], 2, strlen($_POST["loc"]) - 1))]);
-		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . '" method="post"><a><b>Confirm the scout to remove is correct</b></a><br />';
+		$reqDel = isset($_GET['request']) && trim(file_get_contents("requests.pref")) !== "true" ? '&request' : '';
+		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . $reqDel . '" method="post"><a><b>Confirm the scout to remove is correct</b></a><br />';
 		echo $loc . '&nbsp&nbsp<input type="text" name="confirm"></input>&nbsp&nbsp<input type="submit"></form><br /><br />';
 	} else {
 		if(isset($_GET["admin"])) {
@@ -44,7 +46,8 @@ if(isset($_GET['confirm'])) {
 	}
 }
 
-echo '<form action="' . $_SERVER['PHP_SELF'] . '?ts=' . file_get_contents("../timestamp.txt") . PHP_EOL . '&confirm" method="post">';
+$requestDelete = !isset($_GET['admin']) && trim(file_get_contents("requests.pref")) === "true" ? '&request' : '&confirm';
+echo '<form action="' . $_SERVER['PHP_SELF'] . '?ts=' . file_get_contents("../timestamp.txt") . PHP_EOL . $requestDelete . '" method="post">';
 //reads existing signups from file
 $handle = fopen("../data.json", "r+");
 $data = array(array());
