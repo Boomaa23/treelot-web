@@ -48,8 +48,8 @@ if (authMain() != "admin") {
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>?dest=requests" method="post">
 	<a>Use deletion requests (shift deletions must be approved by an admin): </a>
-	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo trim(file_get_contents("delete/requests.pref")) === "true" ? 'checked="checked"' : ""; ?>>Yes</input>
-	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo trim(file_get_contents("delete/requests.pref")) === "false" ? 'checked="checked"' : ""; ?>>No</input><br /><br />
+	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo trim(file_get_contents("delete/requests.conf")) === "true" ? 'checked="checked"' : ""; ?>>Yes</input>
+	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo trim(file_get_contents("delete/requests.conf")) === "false" ? 'checked="checked"' : ""; ?>>No</input><br /><br />
 	<input type="submit" value="Submit">
 </form>
 </body>
@@ -59,7 +59,7 @@ if (authMain() != "admin") {
 if(isset($_GET["dest"]) && $_GET["dest"] === "main") {
 	echo 'Reset succeeded - new signups ready';
 } else if(isset($_GET["dest"]) && $_GET["dest"] === "requests") {
-	file_put_contents("delete/requests.pref", $_POST["request_delete"]);
+	file_put_contents("delete/requests.conf", $_POST["request_delete"]);
 	echo 'Deletion request usage changed successfully' . '<br />' . '(selector above will not be updated - this is fine)';
 }
 
