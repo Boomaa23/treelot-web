@@ -16,7 +16,7 @@ if (authMain() != "admin") {
 </head>
 
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?dest=main" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?success" method="post">
 <h2>TR37 Shift Reset & Backup</h2>
 <p>Used annually to reset everything after each year's Tree Lot is over.<br /> Automatically backs up old shifts for viewing.</p>
 <?php $dtsin = json_decode(file_get_contents("resetDates.json")); ?>
@@ -45,22 +45,12 @@ if (authMain() != "admin") {
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br /><br />
 	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
 </form><br />
-
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?dest=requests" method="post">
-	<a>Use deletion requests (shift deletions must be approved by an admin): </a>
-	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo trim(file_get_contents("delete/requests.conf")) === "true" ? 'checked="checked"' : ""; ?>>Yes</input>
-	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo trim(file_get_contents("delete/requests.conf")) === "false" ? 'checked="checked"' : ""; ?>>No</input><br /><br />
-	<input type="submit" value="Submit">
-</form>
 </body>
 </html>
 
 <?php
-if(isset($_GET["dest"]) && $_GET["dest"] === "main") {
+if(isset($_GET["success"])) {
 	echo 'Reset succeeded - new signups ready';
-} else if(isset($_GET["dest"]) && $_GET["dest"] === "requests") {
-	file_put_contents("delete/requests.conf", $_POST["request_delete"]);
-	echo 'Deletion request usage changed successfully' . '<br />' . '(selector above will not be updated - this is fine)';
 }
 
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
@@ -83,16 +73,30 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	ftruncate(fopen("data.json", "r+"), 0);
 	ftruncate(fopen("comment/allcomments.json", "r+"), 0);
 	ftruncate(fopen("delete/removelog.json", "r+"), 0);
+	ftruncate(fopen("shiftipmap.json", "r+"), 0);
 	
 	//puts dates into data file
 	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);
 	file_put_contents("resetDates.json", json_encode($resetData), FILE_APPEND);
+	
+	//calculate number of days in shift range
+	$start = strtotime($resetData[2] . "-" . $resetData[0] . "-" . $resetData[1]);
+	$end = strtotime($resetData[5] . "-" . $resetData[3] . "-" . $resetData[4]);
+	$days = round(($end - $start) / (60 * 60 * 24));
+	
+	//put placeholders in shiftipmap
+	$placeholder = array_fill(0, $days, "");
+	$placeholder_arr = array_fill(0, 6, $placeholder);
+	file_put_contents('shiftipmap.json', json_encode($placeholder_arr));
+	
+	//dynamically create basedata based on # of days
+	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 5) . json_encode($placeholder));
 	
 	//copies in blank shift files
 	copy('basedata.json', 'data.json');
 	
 	//clears & resets page/timestamp
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
-	header("refresh:0");
+	//header("refresh:0");
 }
 ?>

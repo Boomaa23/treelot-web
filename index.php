@@ -30,7 +30,7 @@ if (!isset($_GET["admin"])) {
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
 	<?php 
-		$deleteText = trim(file_get_contents("delete/requests.conf")) === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
+		$deleteText = json_decode(file_get_contents('preferences.json'), true)["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
 		echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>';
 		$date = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->format('m/d/Y');
 		echo '<p style="margin-bottom:0;">Comments for today: ' . $date . '</p>';
@@ -68,6 +68,11 @@ if (!isset($_GET["admin"])) {
 		copy('basedata.json', 'data.json');
 	}
 	
+	//grab ip for ip-based shift revocations
+	$rawrtn = file_get_contents("https://httpbin.org/ip");
+	$rtnip = json_decode($rawrtn)->origin;
+	$allip = explode (", ", $rtnip);
+	
 	//reads existing signups from file
 	$handle = fopen("data.json", "r+");
 	$data = array(array());
@@ -77,6 +82,11 @@ if (!isset($_GET["admin"])) {
 		$linecount++;
 	}
 	
+	//reads ip correlation from ipmap
+	$ipmap = json_decode(file_get_contents('shiftipmap.json'), true);
+	
+	//reads preferences from preferences file
+	$prefs = json_decode(file_get_contents('preferences.json'), true);
 	
 	//read values from reset page
 	$dates = json_decode(file_get_contents("resetDates.json"));
@@ -93,7 +103,7 @@ if (!isset($_GET["admin"])) {
 		//prevents modification of already filled slots
 		$read = array(array());
 		for($i = 0;$i <= 5;$i++) {
-			$read[$i][$wk] = !empty($data[$i][$wk]) ? 'id="dis" readonly' : "";
+			$read[$i][$wk] = !empty($data[$i][$wk]) && ($ipmap[$i][$wk] === $allip[sizeof($allip) - 1]) && (trim($prefs["revocations"]) === "false") ? 'id="dis" readonly' : "";
 		}
 
 		//checks to disable weekday shifts

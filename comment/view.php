@@ -4,7 +4,7 @@
 if(isset($_GET["line"]) && isset($_GET["src"])) {
 	$filename = "allcomments.json";
 	if($_GET["src"] == "archive" && isset($_GET["year"])) {
-		$filename = 'archive/' . $_GET["year"] . '/';
+		$filename = '../archive/' . $_GET["year"] . '/' . $filename;
 	}
 	
 	$handle = fopen($filename, "r+");

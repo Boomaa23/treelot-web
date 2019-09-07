@@ -92,7 +92,7 @@ if (authMain() != "admin") {
 
 	for($i = 0;$i < $linecount;$i++) {
 		if($data[$i] != "") {
-			echo '<a id="nostyle" href="view.php?line=' . $i . '&src=current"><div id="title">' . trim_text($data[$i][4] . ' - ' . $data[$i][0],70);
+			echo '<a id="nostyle" href="../comment/view.php?line=' . $i . '&year=' . $year . '&src=archive"><div id="title">' . trim_text($data[$i][4] . ' - ' . $data[$i][0],70);
 			echo '</div><div id="date">' . $data[$i][1] . ' | ' . $data[$i][2];
 			echo '</div><br><div id="content">' . trim_text($data[$i][3],500);
 			echo "</a><hr /></div>";
