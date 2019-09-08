@@ -12,6 +12,7 @@ if (authMain() != "admin") {
 	<link rel="icon" href="../favicon.png">
 	<style>
 		th, td {border:1px solid grey; text-align:center;}
+		input {margin-bottom:7px;}
 		#dis {background-color:#eaeaea;}
 		body {text-align:center;font-family:"Arial";}
 	</style>
@@ -22,12 +23,14 @@ if (authMain() != "admin") {
 	<p>Used to view the shift signups from previous years.</p>
 
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
-		<input type="number" id="year" name="year" min="2000" value="<?php if(isset($_GET["year"])) { echo $_GET["year"]; } ?>" required></td>
-		<input type="submit" value="Submit">
+		Year: <input type="number" id="year" name="year" min="2000" value="<?php if(isset($_GET["year"])) { echo $_GET["year"]; } ?>" required>
+		<input type="submit" value="Submit"><br />
+		Archived Year(s): <?php echo(implode(", ", glob('*', GLOB_ONLYDIR))); ?>
 	</form>
 
-	<form>
 	<?php
+	
+	
 	if(isset($_GET["year"])) {
 		$year = $_GET["year"];
 		echo '<h2><i>' . $year . ' Shifts</i></h2><table cellspacing="0" cellpadding="5" align="center">';
@@ -79,7 +82,6 @@ if (authMain() != "admin") {
 		}
 		echo '
 		</table>
-		</form>
 		<h2><i>' . $year . ' Comments</i></h2>';
 		
 		$handle = fopen($year . "/allcomments.json", "r+");

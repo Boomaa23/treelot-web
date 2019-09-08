@@ -27,7 +27,6 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 			array_push($diff_array, array($i, $j));
 		}
 	}
-	print_r($diff_array);
 	
 	//loop through array and attach a corresponding ip to shift
 	$ipmap = json_decode(file_get_contents("shiftipmap.json"), true);
