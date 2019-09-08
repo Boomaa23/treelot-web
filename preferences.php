@@ -24,24 +24,32 @@ if (authMain() != "admin") {
   $prefs = json_decode(file_get_contents('preferences.json'), true);
 ?>
 
-<a><b>Use deletion requests</b><i>(default: no)</i>: </a>
+<a><b>Enable deletion requests</b><i>(default: no)</i>: </a>
 	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo $prefs["requests"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
 	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo $prefs["requests"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
   <a>(shift deletions must be approved by an admin)</a><br /><br />
 
-<a><b>Enable IP-based shift revocations </b><i>(default: yes)</i>: </a>
-  <input type="radio" id="revocation_enable" name="revocation_enable" value="true" <?php echo $prefs["revocations"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
-  <input type="radio" id="revocation_enable" name="revocation_enable" value="false" <?php echo $prefs["revocations"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
-  <a>(shifts will be greyed out after entry to all but the inital IP that entered it)</a>
+<a><b>Enable IP-based shift rewrites </b><i>(default: yes)</i>: </a>
+  <input type="radio" id="rewrite_enable" name="rewrite_enable" value="true" <?php echo $prefs["rewrites"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
+  <input type="radio" id="rewrite_enable" name="rewrite_enable" value="false" <?php echo $prefs["rewrites"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
+  <a>(shifts will be greyed out after entry to all but the inital IP that entered it)</a><br /><br />
 
-<br /><br /><input type="submit" value="Submit">
+<a><b>Enable lot setup shifts </b><i>(default: no)</i>: </a>
+  <input type="radio" id="setup_shifts" name="setup_shifts" value="true" <?php echo $prefs["setup"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
+  <input type="radio" id="setup_shifts" name="setup_shifts" value="false" <?php echo $prefs["setup"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
+  <a>(users will not be able to sign up for shifts during tree recieving)</a><br /><br />
+
+<input type="submit" value="Submit">
 </form>
 </body>
 </html>
 
 <?php
 if(isset($_GET["success"])) {
-  file_put_contents("preferences.json", json_encode(array("requests" => $_POST["request_delete"], "revocations" => $_POST["revocation_enable"])));
+  file_put_contents("preferences.json", json_encode(array(
+		"requests" => $_POST["request_delete"], 
+		"rewrites" => $_POST["rewrite_enable"], 
+		"setup" => $_POST["setup_shifts"]), JSON_PRETTY_PRINT));
 	echo 'Site-wide preferences changed successfully';
 }
 ?>

@@ -68,7 +68,7 @@ if (!isset($_GET["admin"])) {
 		copy('basedata.json', 'data.json');
 	}
 	
-	//grab ip for ip-based shift revocations
+	//grab ip for ip-based shift rewrites
 	$rawrtn = file_get_contents("https://httpbin.org/ip");
 	$rtnip = json_decode($rawrtn)->origin;
 	$allip = explode (", ", $rtnip);
@@ -82,13 +82,9 @@ if (!isset($_GET["admin"])) {
 		$linecount++;
 	}
 	
-	//reads ip correlation from ipmap
+	//reads all other data from files
 	$ipmap = json_decode(file_get_contents('shiftipmap.json'), true);
-	
-	//reads preferences from preferences file
 	$prefs = json_decode(file_get_contents('preferences.json'), true);
-	
-	//read values from reset page
 	$dates = json_decode(file_get_contents("resetDates.json"));
 	
 	//setup of date counter
@@ -103,12 +99,17 @@ if (!isset($_GET["admin"])) {
 		//prevents modification of already filled slots
 		$read = array(array());
 		for($i = 0;$i <= 5;$i++) {
-			$read[$i][$wk] = !empty($data[$i][$wk]) && ($ipmap[$i][$wk] === $allip[sizeof($allip) - 1]) && (trim($prefs["revocations"]) === "false") ? 'id="dis" readonly' : "";
+			$read[$i][$wk] = !empty($data[$i][$wk]) && ($ipmap[$i][$wk] === $allip[sizeof($allip) - 1]) && (trim($prefs["rewrites"]) === "false") ? 'id="dis" readonly' : "";
 		}
 
 		//checks to disable weekday shifts
 		$wkCk = (int)$dates[6];
-		if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
+		if($wk == 0 && $prefs["setup"] === "false") {
+			echo '
+			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
+			<td><input id="dis" type="text" name="AA[]" value="[TREE DELIVERY]" readonly><br>
+			<input id="dis" type="text" name="AB[]" value="[TREE DELIVERY]" readonly><br></td>';
+		} else if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
 			<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '><br>

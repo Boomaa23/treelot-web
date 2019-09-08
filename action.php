@@ -4,7 +4,7 @@ if(!file_exists("timestamp.txt")) {
 }
 
 if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
-	//grab ip for ip-based shift revocations
+	//grab ip for ip-based shift rewrites
 	$rawrtn = file_get_contents("https://httpbin.org/ip");
 	$rtnip = json_decode($rawrtn)->origin;
 	$allip = explode (", ", $rtnip);
@@ -22,15 +22,17 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	$data_array = array($_POST["AA"], $_POST["AB"], $_POST["BA"], $_POST["BB"], $_POST["CA"], $_POST["CB"]);
 	$diff_array = array();
 	for($i = 0;$i < sizeof($data_array);$i++) {
-		array_push($diff_array, array_diff($data_array[$i], $data[$i]));
+		for($j = 0;$j < sizeof($data_array[$i]);$j++) {
+			if($data_array[$i][$j] !== $data[$i][$j])
+			array_push($diff_array, array($i, $j));
+		}
 	}
+	print_r($diff_array);
 	
 	//loop through array and attach a corresponding ip to shift
 	$ipmap = json_decode(file_get_contents("shiftipmap.json"), true);
 	for($i = 0;$i < sizeof($diff_array);$i++) {
-		foreach($diff_array[$i] as $row => $cell) {
-			$ipmap[$i][$row] = $allip[sizeof($allip) - 1];
-		}
+		$ipmap[$diff_array[$i][0]][$diff_array[$i][1]] = $allip[sizeof($allip) - 1];
 	}
 	file_put_contents("shiftipmap.json", json_encode($ipmap));
 

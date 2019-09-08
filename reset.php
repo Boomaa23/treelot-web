@@ -42,31 +42,36 @@ if (authMain() != "admin") {
 </tr>
 </table><br />
 	<a>Offset (# of days the starting day is from a Saturday): </a>
-	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br /><br />
+	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br />
+	<a>Archive current data - do not uncheck <i>(default: checked): </i></a>
+	<input type="checkbox" id="archive" name="archive" checked="checked"><br /><br />
 	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
-</form><br />
+</form>
 </body>
 </html>
 
 <?php
+//init for inputs & archive
+$dtsin[] = json_decode(file_get_contents("resetDates.json")); 
+$year = (int)$dtsin[2];
+
 if(isset($_GET["success"])) {
-	echo 'Reset succeeded - new signups ready';
+	echo 'Reset succeeded - new signups ready<br />Archived copy viewable <a href="archive/index.php?year=' . $year . '">here</a> if selected';
 }
 
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
-	//init for inputs & archive
-	$dtsin[] = json_decode(file_get_contents("resetDates.json")); 
-	$year = (int)$dtsin[2];
-	
-	if(!file_exists('archive/' . $year . '/')) {
-		mkdir('archive/' . $year);
+	if(isset($_POST["archive"])) {
+		//creates new archive folder if option is selected
+		if(!file_exists('archive/' . $year . '/')) {
+			mkdir('archive/' . $year);
+		}
+		
+		//moves schedules to archive if option is selected
+		copy('data.json', 'archive/' . $year . '/data.json');
+		copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
+		copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
+		copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
 	}
-	
-	//moves schedules to archive
-	copy('data.json', 'archive/' . $year . '/data.json');
-	copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
-	copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
-	copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
 	
 	//clears old files
 	ftruncate(fopen("resetDates.json", "r+"), 0);
@@ -87,7 +92,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	//put placeholders in shiftipmap
 	$placeholder = array_fill(0, $days, "");
 	$placeholder_arr = array_fill(0, 6, $placeholder);
-	file_put_contents('shiftipmap.json', json_encode($placeholder_arr));
+	file_put_contents('shiftipmap.json', json_encode($placeholder_arr, JSON_PRETTY_PRINT));
 	
 	//dynamically create basedata based on # of days
 	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 5) . json_encode($placeholder));
@@ -97,6 +102,6 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	
 	//clears & resets page/timestamp
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
-	//header("refresh:0");
+	header("refresh:0");
 }
 ?>
