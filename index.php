@@ -30,8 +30,9 @@ if (!isset($_GET["admin"])) {
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
 	<?php 
-		$deleteText = json_decode(file_get_contents('preferences.json'), true)["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
-		echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>';
+		$prefs = json_decode(file_get_contents('preferences.json'), true);
+		$deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
+		if($prefs["rewrites"] === "false") { echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>'; }
 		$date = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->format('m/d/Y');
 		echo '<p style="margin-bottom:0;">Comments for today: ' . $date . '</p>';
 		$handle = fopen("comment/allcomments.json", "r+");
@@ -104,21 +105,16 @@ if (!isset($_GET["admin"])) {
 
 		//checks to disable weekday shifts
 		$wkCk = (int)$dates[6];
-		if($wk == 0 && $prefs["setup"] === "false") {
-			echo '
-			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input id="dis" type="text" name="AA[]" value="[TREE DELIVERY]" readonly><br>
-			<input id="dis" type="text" name="AB[]" value="[TREE DELIVERY]" readonly><br></td>';
-		} else if ($wk%7 == $wkCk || $wk%7 == $wkCk+1) {
-			echo '
-			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '><br>
-			<input type="text" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '><br></td>';
-		} else {
+		if (($wk%7 !== $wkCk && $wk%7 !== $wkCk+1) || ($wk == 0 && $prefs["setup"] === "false")) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
 			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$wk] . '" readonly><br>
 			<input id="dis" type="text" name="AB[]" value="' . $data[1][$wk] . '" readonly><br></td>';
+		} else {
+			echo '
+			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
+			<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '><br>
+			<input type="text" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '><br></td>';
 		}
 		
 		//finishes input box setup

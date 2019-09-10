@@ -33,7 +33,7 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	for($i = 0;$i < sizeof($diff_array);$i++) {
 		$ipmap[$diff_array[$i][0]][$diff_array[$i][1]] = $allip[sizeof($allip) - 1];
 	}
-	file_put_contents("shiftipmap.json", json_encode($ipmap));
+	file_put_contents("shiftipmap.json", json_encode($ipmap, JSON_PRETTY_PRINT));
 
 	//clears shift data file and timestamp
 	if(file_exists("data.json")) { ftruncate(fopen("data.json", "r+"), 0); }

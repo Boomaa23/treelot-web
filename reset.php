@@ -43,8 +43,8 @@ if (authMain() != "admin") {
 </table><br />
 	<a>Offset (# of days the starting day is from a Saturday): </a>
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br />
-	<a>Archive current data - do not uncheck <i>(default: checked): </i></a>
-	<input type="checkbox" id="archive" name="archive" checked="checked"><br /><br />
+	<a>Expand current shifts - no reset <i>(default: unchecked): </i></a>
+	<input type="checkbox" id="expand" name="expand"><br /><br />
 	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
 </form>
 </body>
@@ -56,32 +56,24 @@ $dtsin[] = json_decode(file_get_contents("resetDates.json"));
 $year = (int)$dtsin[2];
 
 if(isset($_GET["success"])) {
-	echo 'Reset succeeded - new signups ready<br />Archived copy viewable <a href="archive/index.php?year=' . $year . '">here</a> if selected';
+	echo 'Reset succeeded - new signups ready<br />Archived copy viewable <a href="archive/index.php?year=' . $year . '">here</a>';
 }
 
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
-	if(isset($_POST["archive"])) {
-		//creates new archive folder if option is selected
-		if(!file_exists('archive/' . $year . '/')) {
-			mkdir('archive/' . $year);
-		}
-		
-		//moves schedules to archive if option is selected
-		copy('data.json', 'archive/' . $year . '/data.json');
-		copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
-		copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
-		copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
+	//creates new archive folder
+	if(!file_exists('archive/' . $year . '/')) {
+		mkdir('archive/' . $year);
 	}
 	
-	//clears old files
-	ftruncate(fopen("resetDates.json", "r+"), 0);
-	ftruncate(fopen("data.json", "r+"), 0);
-	ftruncate(fopen("comment/allcomments.json", "r+"), 0);
-	ftruncate(fopen("delete/removelog.json", "r+"), 0);
-	ftruncate(fopen("shiftipmap.json", "r+"), 0);
+	//moves schedules to archive
+	copy('data.json', 'archive/' . $year . '/data.json');
+	copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
+	copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
+	copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
 	
 	//puts dates into data file
 	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);
+	ftruncate(fopen("resetDates.json", "r+"), 0);
 	file_put_contents("resetDates.json", json_encode($resetData), FILE_APPEND);
 	
 	//calculate number of days in shift range
@@ -89,16 +81,56 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	$end = strtotime($resetData[5] . "-" . $resetData[3] . "-" . $resetData[4]);
 	$days = round(($end - $start) / (60 * 60 * 24));
 	
-	//put placeholders in shiftipmap
-	$placeholder = array_fill(0, $days, "");
-	$placeholder_arr = array_fill(0, 6, $placeholder);
-	file_put_contents('shiftipmap.json', json_encode($placeholder_arr, JSON_PRETTY_PRINT));
+	//clears old files
+	$expanded = "";
+	if(!isset($_POST["expand"])) {
+		ftruncate(fopen("data.json", "r+"), 0);
+		ftruncate(fopen("comment/allcomments.json", "r+"), 0);
+		ftruncate(fopen("delete/removelog.json", "r+"), 0);
+		ftruncate(fopen("shiftipmap.json", "r+"), 0);
+	} else {
+		//reads existing signups from file
+		$handle = fopen("data.json", "r+");
+		$data = array(array());
+		$linecount = 0;
+		while(!feof($handle)){
+			$data[$linecount] = json_decode(fgets($handle));
+			$linecount++;
+		}
+		
+		//merges new array of blanks (sized to fit) with old data
+		for($i = 0;$i < sizeof($data);$i++) {
+			$expanded .= json_encode(array_merge($data[$i], array_fill(0, ($days - sizeof($data[0])), "")));
+			if($i !== sizeof($data) - 1) {
+				$expanded .= PHP_EOL;
+			}
+		}
+	}
+	
+	$placeholder = array_fill(0, abs($days), "");
+	if(!isset($_POST["expand"])) {
+		//put placeholders in shiftipmap
+		$placeholder_arr = array_fill(0, 6, $placeholder);
+		file_put_contents('shiftipmap.json', json_encode($placeholder_arr, JSON_PRETTY_PRINT));
+	} else {
+		//expand ip storage to match shift length
+		$o_ips = json_decode(file_get_contents('shiftipmap.json'));
+		$oldsize = sizeof($o_ips[0]);
+		for($i = 0;$i < sizeof($o_ips);$i++) {
+			$o_ips[$i] = array_merge($o_ips[$i], array_fill(0, ($days - $oldsize + 1), ""));
+		}
+		file_put_contents('shiftipmap.json', json_encode($o_ips, JSON_PRETTY_PRINT));
+	}
 	
 	//dynamically create basedata based on # of days
 	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 5) . json_encode($placeholder));
 	
-	//copies in blank shift files
-	copy('basedata.json', 'data.json');
+	//copies in blank shift files or expanded shift data
+	if(!isset($_POST["expand"])) {
+		copy('basedata.json', 'data.json');
+	} else {
+		file_put_contents('data.json', $expanded);
+	}
 	
 	//clears & resets page/timestamp
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
