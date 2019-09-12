@@ -33,21 +33,33 @@ if (!isset($_GET["admin"])) {
 		$prefs = json_decode(file_get_contents('preferences.json'), true);
 		$deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
 		if($prefs["rewrites"] === "false") { echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>'; }
-		$date = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->format('m/d/Y');
-		echo '<p style="margin-bottom:0;">Comments for today: ' . $date . '</p>';
+		$dateStart = (new DateTime("now", new DateTimeZone("America/Los_Angeles")));
+		$dateEnd = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->add(new DateInterval("P7D"));
+		$interval = DateInterval::createFromDateString('1 day');
+		$period = new DatePeriod($dateStart, $interval, $dateEnd);
+		
+		echo '<p style="margin-bottom:0;">Comments for the next seven days: ' . $dateStart->format('m/d/Y') . ' - ' . $dateEnd->format('m/d/Y') . '</p>';
 		$handle = fopen("comment/allcomments.json", "r+");
 		$file = array(array());
 		for($l = 0;!feof($handle);$l++) {
 			$file[$l] = json_decode(fgets($handle));
 		}
-		$max = sizeof($file) > 6 ? 6 : sizeof($file);
-		for($i = 0;$i < $max;$i++) {
-			if($i % 3 == 0 && !is_null($file[$i])) {
+		
+		$disp = 0;
+		for($i = 0;$i < sizeof($file) && !($disp >= 6);$i++) {
+			if($disp % 3 == 0 && !is_null($file[$i])) {
 				echo '<br />';
 			}
-			if(!is_null($file[$i]) && $file[$i][1] == $date) {
-				echo '<a href="comment/view.php?line=' . $i . '&src=main">' . $file[$i][4] . ' - ' . $file[$i][0] . ' (' . $file[$i][2] . ')</a> &nbsp&nbsp';
+			
+			foreach($period as $dt) {
+				if(!is_null($file[$i]) && $file[$i][1] == $dt->format('m-d-Y')) {
+					$disp++;
+					echo '<a href="comment/view.php?line=' . $i . '&src=main">' . $file[$i][4] . ' - ' . $file[$i][0] . ' (' . $file[$i][2] . ')</a> &nbsp&nbsp';
+				}
 			}
+		}
+		if($disp > 6) {
+			echo '<br /><a href="comment/index.php">[SEE MORE]</a>';
 		}
 	?>
 	</div>

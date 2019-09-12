@@ -1,5 +1,5 @@
 {
     "requests": "false",
-    "rewrites": "true",
+    "rewrites": "false",
     "setup": "false"
 }
