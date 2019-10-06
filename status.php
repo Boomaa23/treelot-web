@@ -15,12 +15,7 @@
 
 <?php
 if(isset($_POST["pass"])) {
-  $ftp_cred = json_decode(file_get_contents("ftp_cred.json"), true);
-  if($ftp_cred === FALSE && isset($_POST["url"])) {
-    $ftp_cred = array("url" => "ftp.byethost4.com", "usr" => "b4_22868853", "pass" => $_POST["pass"]);
-  }
-  
-  $serverurlprefix = 'ftp://' . $ftp_cred["usr"] . ':' . $ftp_cred["pass"] . '@' . $ftp_cred["url"] . '/htdocs/';
+  $serverurlprefix = 'ftp://b4_22868853:' . $_POST["pass"] . '@ftp.byethost4.com/htdocs/';
   $giturlprefix = "https://raw.githubusercontent.com/Boomaa23/treelot-web/master/";
   $files = array(
     "archive/index.php",
