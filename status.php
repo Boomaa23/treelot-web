@@ -10,73 +10,34 @@
 </head>
 
 <body>
-<h2>TR37 Page Site Status</h2>
+<h2>Page Site Status</h2>
 <p>A check indicates the site is up to date with GitHub.</p>
 
 <?php
 if(isset($_POST["pass"])) {
+	$files = json_decode(file_get_contents("directory.json"), true);
   $serverurlprefix = 'ftp://b4_22868853:' . $_POST["pass"] . '@ftp.byethost4.com/htdocs/';
   $giturlprefix = "https://raw.githubusercontent.com/Boomaa23/treelot-web/master/";
-  $files = array(
-    "archive/index.php",
-    "comment/add.php",
-    "comment/addAction.php",
-    "comment/commentstyle.css",
-    "comment/index.php",
-    "comment/view.php",
-    "delete/deleteAction.php",
-    "delete/index.php",
-    "delete/redirect.js",
-    ".gitignore",
-    ".htaccess",
-    "action.php",
-    "adminAuth.php",
-    "auth.php",
-    "error.php",
-    "index.php",
-    "preferences.php",
-    "reset.php",
-    "status.php"
-  );
-  $valid = array();
   
-  for($i = 0;$i < sizeof($files); $i++) {
-    $server_file = file_get_contents($serverurlprefix . $files[$i]);
-    $git_file = file_get_contents($giturlprefix . $files[$i]);
-    $valid[$i] = ($server_file === $git_file) ? " &check;" : " &cross;";
-    sleep(0.01);
-  }
+  $valid = array();
+	foreach($files as $group => $filegroup) {
+	  foreach($filegroup as $file) {
+				$fqfn = ($group !== "root") ? ($group . '/' . $file) : $file; //fqfn = fully qualified file name :P
+				$server_file = md5(file_get_contents($serverurlprefix . $fqfn));
+		    $git_file = md5(file_get_contents($giturlprefix . $fqfn));
+		    array_push($valid, ($server_file === $git_file) ? " &check;" : " &cross;");
+		    sleep(0.01);
+	  }
+	}
 
-  echo '
-  <div class="files">
-    <ul>
-      <li>archive<ul>
-        <li>index.php' . $valid[0] . '</li>
-      </ul></li>
-      <li>comment<ul>
-        <li>add.php' . $valid[1] . '</li>
-        <li>addAction.php' . $valid[2] . '</li>
-        <li>commentstyle.css' . $valid[3] . '</li>
-        <li>index.php' . $valid[4] . '</li>
-        <li>view.php' . $valid[5] . '</li>
-      </ul></li>
-      <li>delete<ul>
-        <li>deleteAction.php' . $valid[6] . '</li>
-        <li>index.php' . $valid[7] . '</li>
-        <li>redirect.js' . $valid[8] . '</li>
-      </ul></li>
-      <li>.gitignore' . $valid[9] . '</li>
-      <li>.htaccess' . $valid[10] . '</li>
-      <li>action.php' . $valid[11] . '</li>
-      <li>adminAuth.php' . $valid[12] . '</li>
-      <li>auth.php' . $valid[13] . '</li>
-      <li>error.php' . $valid[14] . '</li>
-      <li>index.php' . $valid[15] . '</li>
-      <li>preferences.php' . $valid[16] . '</li>
-      <li>reset.php' . $valid[17] . '</li>
-      <li>status.php' . $valid[18] . '</li>
-    </ul>
-  </div>';
+  echo '<div class="files"><ul>';
+	$v_ct = 0;
+	foreach($files as $group => $filegroup) {
+		if($group !== "root") { echo '<li>' . $group . '<ul>'; }
+	  foreach($filegroup as $file) { echo '<li>' . $file . $valid[$v_ct] . '</li>'; $v_ct++; }
+		if($group !== "root") { echo '</li></ul>'; }
+	}
+	echo '</ul></div>';
 } else {
   echo '
   <form action="' . $_SERVER["PHP_SELF"] . '" method="post">

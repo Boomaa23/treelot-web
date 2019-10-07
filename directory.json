@@ -1,0 +1,29 @@
+{
+  "archive": [
+    "index.php"
+  ],
+  "comment": [
+    "add.php",
+    "addAction.php",
+    "commentstyle.css",
+    "index.php",
+    "view.php"
+  ],
+  "delete": [
+    "deleteAction.php",
+    "index.php",
+    "redirect.js"
+  ],
+  "root": [
+    ".gitignore",
+    ".htaccess",
+    "action.php",
+    "adminAuth.php",
+    "auth.php",
+    "error.php",
+    "index.php",
+    "preferences.php",
+    "reset.php",
+    "status.php"
+  ]
+}
