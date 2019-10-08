@@ -15,6 +15,7 @@ if (authMain() != "admin") {
 		input {margin-bottom:7px;}
 		#dis {background-color:#eaeaea;}
 		body {text-align:center;font-family:"Arial";}
+		.nostyle {text-decoration:none;color:black;}
 	</style>
 </head>
 
@@ -29,10 +30,9 @@ if (authMain() != "admin") {
 	</form>
 
 	<?php
-	
-	
 	if(isset($_GET["year"])) {
 		$year = $_GET["year"];
+		echo '<button><a class="nostyle" href="csv.php?year=' . $year . '">Download as CSV</a></button>';
 		echo '<h2><i>' . $year . ' Shifts</i></h2><table cellspacing="0" cellpadding="5" align="center">';
 		
 		//reads existing signups from file
@@ -80,6 +80,7 @@ if (authMain() != "admin") {
 			</tr>';
 			$wk++;
 		}
+		
 		echo '
 		</table>
 		<h2><i>' . $year . ' Comments</i></h2>';
