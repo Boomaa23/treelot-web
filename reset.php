@@ -44,7 +44,9 @@ if (authMain() != "admin") {
 	<a>Offset (# of days the starting day is from a Saturday): </a>
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br />
 	<a>Expand current shifts - no reset <i>(default: unchecked): </i></a>
-	<input type="checkbox" id="expand" name="expand"><br /><br />
+	<input type="checkbox" id="expand" name="expand"><br />
+	<a>Backup only - no reset <i>(default: unchecked): </i></a>
+	<input type="checkbox" id="backup" name="backup"><br /><br />
 	<input type="submit" value="Submit" onclick="return confirm('Are you sure you want reset all the data from this year?')">
 </form>
 </body>
@@ -56,7 +58,7 @@ $dtsin[] = json_decode(file_get_contents("resetDates.json"));
 $year = (int)$dtsin[2];
 
 if(isset($_GET["success"])) {
-	echo 'Reset succeeded - new signups ready<br />Archived copy viewable <a href="archive/index.php?year=' . $year . '">here</a>';
+	echo 'Success! Archived copy viewable <a href="archive/index.php?year=' . $year . '">here</a>';
 }
 
 if(isset($_POST["startYear"]) && isset($_POST["off"])) {
@@ -70,6 +72,11 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
 	copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
 	copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
+	
+	if(isset($_POST["backup"])) {
+		header("refresh:0");
+		exit();
+	}
 	
 	//puts dates into data file
 	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);

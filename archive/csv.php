@@ -1,8 +1,12 @@
 <?php 
 $year = $_GET["year"];
 //reads existing signups from file
-if(file_exists($year . "/")) {
-	$handle = fopen($year . "/data.json", "r+");
+if(file_exists($year . "/") || file_exists("../data.json")) {
+	if(isset($_GET["src"]) && $_GET["src"] === "root") {
+		$handle = fopen("../data.json", "r+");
+	} else {
+		$handle = fopen($year . "/data.json", "r+");
+	}
 	$data = array(array());
 	$linecount = 0;
 	while(!feof($handle)){
@@ -14,7 +18,8 @@ if(file_exists($year . "/")) {
 }
 
 //read values from reset page
-$dates = json_decode(file_get_contents($year . "/resetDates.json"));
+$dateSrc = isset($_GET["src"]) ? "../resetDates.json" : $year . "/resetDates.json";
+$dates = json_decode(file_get_contents($dateSrc));
 
 //setup of date counter
 $begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
@@ -24,7 +29,7 @@ $period = new DatePeriod($begin, $interval, $end);
 $wk = 0;
 
 $filename = $year . '_treelot-shift-report_' . date("c") . '.csv';
-$content = "Date,9-1 #1,9-1 #2,1/3-5 #1, 1/3-5 #2, 5-9 #1, 5-9 #2\n";
+$content = ",9-1 #1,9-1 #2,1/3-5 #1, 1/3-5 #2, 5-9 #1, 5-9 #2\n";
 $j = 0;
 foreach($period as $dt) {
   $content .= ($dt->format("m/d")) . ',';

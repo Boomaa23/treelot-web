@@ -10,21 +10,21 @@ if(isset($_POST["confirm"])) {
 	}
 
 	//checks for correct entered value
-	if(trim($_POST["confirm"]) == trim($data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))])) {
+	$dy_loc = (int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1));
+	if(trim($_POST["confirm"]) == trim($data[$_GET["loc"]{0}][$dy_loc])) {
 		if(!isset($_GET['request'])) {
-			$loc = trim($data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))]);
-			$rawrtn = file_get_contents("https://httpbin.org/ip");
-			$rtnip = json_decode($rawrtn)->origin;
-			$allip = explode (", ", $rtnip);
-			$removed = array("name" => $loc, "shiftlocation" => $_GET["loc"]{0} . "-" . substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1),
-				"accessed" => date("m-d-Y H:i:s T"), "ip" => $allip[sizeof($allip) - 1]);
+			$loc = trim($data[$_GET["loc"]{0}][$dy_loc]);
+			include '../iputils.php';
+			$ip = getIP();
+			$removed = array("name" => $loc, "shiftlocation" => $_GET["loc"]{0} . "-" . $dy_loc,
+				"accessed" => date("m-d-Y H:i:s T"), "ip" => $ip);
 			file_put_contents("removelog.json", json_encode($removed) . PHP_EOL, FILE_APPEND);
-			$data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))] = "";
+			$data[$_GET["loc"]{0}][$dy_loc] = "";
 		} else {
-			$data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))] .= ' - DELETION REQUESTED';
+			$data[$_GET["loc"]{0}][$dy_loc] .= ' - DELETION REQUESTED';
 		}
 	} else {
-		echo '<a>The scout name <b>' . $_POST["confirm"] . '</b> did not match the correct scout name of <b>' . $data[$_GET["loc"]{0}][(int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1))];
+		echo '<a>The scout name <b>' . $_POST["confirm"] . '</b> did not match the correct scout name of <b>' . $data[$_GET["loc"]{0}][$dy_loc];
 		die('</b><br /><a>You will be redirected in </a><span id="seconds">10</span> <a> seconds</a><script src="redirect.js" type="text/javascript"></script>');
 	}
 

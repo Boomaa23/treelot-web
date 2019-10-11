@@ -23,6 +23,7 @@
     "auth.php",
     "error.php",
     "index.php",
+    "iputils.php",
     "preferences.php",
     "reset.php",
     "status.php"

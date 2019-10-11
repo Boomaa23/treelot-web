@@ -33,6 +33,7 @@ if (!isset($_GET["admin"])) {
 		$prefs = json_decode(file_get_contents('preferences.json'), true);
 		$deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
 		if($prefs["rewrites"] === "false") { echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>'; }
+		echo ' <button><a href="archive/csv.php?src=root&year=' . json_decode(file_get_contents("resetDates.json"))[2] . '" id="nostyle"><b>Download shifts as CSV</b></a></button>';
 		$dateStart = (new DateTime("now", new DateTimeZone("America/Los_Angeles")));
 		$dateEnd = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->add(new DateInterval("P7D"));
 		$interval = DateInterval::createFromDateString('1 day');
@@ -82,9 +83,8 @@ if (!isset($_GET["admin"])) {
 	}
 	
 	//grab ip for ip-based shift rewrites
-	$rawrtn = file_get_contents("https://httpbin.org/ip");
-	$rtnip = json_decode($rawrtn)->origin;
-	$allip = explode (", ", $rtnip);
+	include 'iputils.php';
+	$ip = getIP();
 	
 	//reads existing signups from file
 	$handle = fopen("data.json", "r+");
@@ -105,38 +105,38 @@ if (!isset($_GET["admin"])) {
 	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
-	$wk = 0;
+	$day = 0;
 	
 	//setup of shift form boxes
 	foreach ($period as $dt) {
 		//prevents modification of already filled slots
 		$read = array(array());
 		for($i = 0;$i <= 5;$i++) {
-			$read[$i][$wk] = !empty($data[$i][$wk]) && ($ipmap[$i][$wk] === $allip[sizeof($allip) - 1]) && (trim($prefs["rewrites"]) === "false") ? 'id="dis" readonly' : "";
+			$read[$i][$day] = !empty($data[$i][$day]) && ($ipmap[$i][$day] == $ip) && (trim($prefs["rewrites"]) === "false") ? 'id="dis" readonly' : "";
 		}
 
 		//checks to disable weekday shifts
-		$wkCk = (int)$dates[6];
-		if (($wk%7 !== $wkCk && $wk%7 !== $wkCk+1) || ($wk == 0 && $prefs["setup"] === "false")) {
+		$dayCk = (7 - (int)$dates[6]) % 7;
+		if (($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) || ($day === 0 && $prefs["setup"] === "false")) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$wk] . '" readonly><br>
-			<input id="dis" type="text" name="AB[]" value="' . $data[1][$wk] . '" readonly><br></td>';
+			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
+			<input id="dis" type="text" name="AB[]" value="' . $data[1][$day] . '" readonly><br></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" ' . $read[0][$wk] . '><br>
-			<input type="text" name="AB[]" value="' . $data[1][$wk] . '" ' . $read[1][$wk] . '><br></td>';
+			<td><input type="text" name="AA[]" value="' . $data[0][$day] . '" ' . $read[0][$day] . '><br>
+			<input type="text" name="AB[]" value="' . $data[1][$day] . '" ' . $read[1][$day] . '><br></td>';
 		}
 		
 		//finishes input box setup
 		echo '
-		<td><input type="text" name="BA[]" value="' . $data[2][$wk] . '" ' . $read[2][$wk] . '><br>
-		<input type="text" name="BB[]" value="' . $data[3][$wk] . '" ' . $read[3][$wk] . '><br></td>
-		<td><input type="text" name="CA[]" value="' . $data[4][$wk] . '" ' . $read[4][$wk] . '><br>
-		<input type="text" name="CB[]" value="' . $data[5][$wk] . '" ' . $read[5][$wk] . '><br></td>
+		<td><input type="text" name="BA[]" value="' . $data[2][$day] . '" ' . $read[2][$day] . '><br>
+		<input type="text" name="BB[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br></td>
+		<td><input type="text" name="CA[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
+		<input type="text" name="CB[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '><br></td>
 		</tr>';
-		$wk++;
+		$day++;
 	}
 	?>
 	</table>

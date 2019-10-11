@@ -35,7 +35,7 @@ if(isset($_GET['confirm']) || isset($_GET['request'])) {
 		//removes selected value from internal data
 		$loc = trim($data[$_POST["loc"]{0}][(int)(substr($_POST["loc"], 2, strlen($_POST["loc"]) - 1))]);
 		$reqDel = isset($_GET['request']) && json_decode(file_get_contents('../preferences.json'), true)["requests"] !== "true" ? '&request' : '';
-		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . $reqDel . '" method="post"><a><b>Confirm the scout to remove is correct</b></a><br />';
+		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . $reqDel . '" method="post"><a><b><br />Confirm the scout to remove is correct</b></a><br />';
 		echo $loc . '&nbsp&nbsp<input type="text" name="confirm"></input>&nbsp&nbsp<input type="submit"></form><br /><br />';
 	} else {
 		if(isset($_GET["admin"])) {
