@@ -1,4 +1,12 @@
 <?php 
+include "../auth.php";
+if ((authMain() != "admin") && (authMain() != "user")) {
+	die("You do not have the adequate credentials to view this page.");
+}	
+if(!isset($_GET["year"])) {
+	die("Invalid or no year provided");
+}
+
 $year = $_GET["year"];
 //reads existing signups from file
 if(file_exists($year . "/") || file_exists("../data.json")) {

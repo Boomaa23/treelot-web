@@ -1,3 +1,10 @@
+<?php 
+	include "../auth.php";
+	if ((authMain() != "admin") && (authMain() != "user")) {
+		die("You do not have the adequate credentials to view this page.");
+	}	
+?>
+
 <html>
 <head>
 <title>TR37 Tree Lot | Shift Deletion Request</title>

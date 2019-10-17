@@ -1,6 +1,11 @@
 <link rel="stylesheet" type="text/css" href="commentstyle.css">
 
 <?php
+include "../auth.php";
+if ((authMain() != "admin") && (authMain() != "user")) {
+	die("You do not have the adequate credentials to view this page.");
+}	
+
 if(isset($_GET["line"]) && isset($_GET["src"])) {
 	$filename = "allcomments.json";
 	if($_GET["src"] == "archive" && isset($_GET["year"])) {

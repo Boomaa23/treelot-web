@@ -1,4 +1,9 @@
 <?php
+	include "../auth.php";
+	if ((authMain() != "admin") && (authMain() != "user")) {
+		die("You do not have the adequate credentials to view this page.");
+	}	
+	
 	$queue = json_decode(file_get_contents('../preferences.json'), true)["requests"] == "true" ? false : true;
 	
 	//reads shift data from file

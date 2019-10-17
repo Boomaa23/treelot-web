@@ -1,5 +1,9 @@
 <?php
 session_start();
+include "../auth.php";
+if ((authMain() != "admin") && (authMain() != "user")) {
+	die("You do not have the adequate credentials to view this page.");
+}	
 if(!file_exists("timestamp.txt")) {
 	file_put_contents("timestamp.txt", null, FILE_APPEND);
 }
