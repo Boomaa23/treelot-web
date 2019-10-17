@@ -1,5 +1,4 @@
 {
-    "requests": "false",
-    "rewrites": "true",
+    "requests": "true",
     "setup": "false"
 }

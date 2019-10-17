@@ -20,7 +20,7 @@ if (authMain() != "admin") {
 </head>
 
 <body>
-	<h2>TR37 Past Shift Viewer</h2>
+	<h2>Archived Shift Viewer</h2>
 	<p>Used to view the shift signups from previous years.</p>
 
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">

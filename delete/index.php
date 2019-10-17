@@ -4,7 +4,6 @@
 <link rel="icon" href="../favicon.png">
 <style>
 	th, td {border:1px solid grey; text-align:center;}
-	#dis {background-color:#eaeaea;}
 	body {text-align:center;font-family:"Arial";}
 </style>
 </head>
@@ -23,7 +22,7 @@
 
 <!--enter box fields-->
 <?php
-if(isset($_GET['confirm']) || isset($_GET['request'])) {
+if(isset($_GET['confirm'])) {
 	if($_GET["ts"] == file_get_contents("../timestamp.txt") && isset($_POST["loc"])) {
 		//gets shift data from file
 		$handle = fopen("../data.json", "r+");
@@ -34,8 +33,7 @@ if(isset($_GET['confirm']) || isset($_GET['request'])) {
 		
 		//removes selected value from internal data
 		$loc = trim($data[$_POST["loc"]{0}][(int)(substr($_POST["loc"], 2, strlen($_POST["loc"]) - 1))]);
-		$reqDel = isset($_GET['request']) && json_decode(file_get_contents('../preferences.json'), true)["requests"] !== "true" ? '&request' : '';
-		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . $reqDel . '" method="post"><a><b><br />Confirm the scout to remove is correct</b></a><br />';
+		echo '<form action="deleteAction.php?loc=' . $_POST["loc"] . '" method="post"><a><b><br />Confirm the scout to remove is correct</b></a><br />';
 		echo $loc . '&nbsp&nbsp<input type="text" name="confirm"></input>&nbsp&nbsp<input type="submit"></form><br /><br />';
 	} else {
 		if(isset($_GET["admin"])) {
@@ -46,8 +44,7 @@ if(isset($_GET['confirm']) || isset($_GET['request'])) {
 	}
 }
 
-$requestDelete = !isset($_GET['admin']) && json_decode(file_get_contents('../preferences.json'), true)["requests"] === "true" ? '&request' : '&confirm';
-echo '<form action="' . $_SERVER['PHP_SELF'] . '?ts=' . file_get_contents("../timestamp.txt") . PHP_EOL . $requestDelete . '" method="post">';
+echo '<form action="' . $_SERVER['PHP_SELF'] . '?ts=' . file_get_contents("../timestamp.txt") . PHP_EOL . '&confirm" method="post">';
 //reads existing signups from file
 $handle = fopen("../data.json", "r+");
 $data = array(array());

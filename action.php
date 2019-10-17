@@ -1,4 +1,5 @@
 <?php
+session_start();
 if(!file_exists("timestamp.txt")) {
 	file_put_contents("timestamp.txt", null, FILE_APPEND);
 }
@@ -28,12 +29,14 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 		}
 	}
 	
-	//loop through array and attach a corresponding ip to shift
-	$ipmap = json_decode(file_get_contents("shiftipmap.json"), true);
-	for($i = 0;$i < sizeof($diff_array);$i++) {
-		$ipmap[$diff_array[$i][0]][$diff_array[$i][1]] = $allip[sizeof($allip) - 1];
+	if(!isset($_SESSION['filled'])) {
+		$_SESSION['filled'] = array("");
 	}
-	file_put_contents("shiftipmap.json", json_encode($ipmap, JSON_PRETTY_PRINT));
+	
+	//loop through array and add entered shifts to session var
+	for($i = 0;$i < sizeof($diff_array);$i++) {
+		array_push($_SESSION['filled'], $diff_array[$i][0] . '-' . $diff_array[$i][1]);
+	}
 
 	//clears shift data file and timestamp
 	if(file_exists("data.json")) { ftruncate(fopen("data.json", "r+"), 0); }

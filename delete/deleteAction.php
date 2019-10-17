@@ -1,5 +1,6 @@
 <?php
-if(isset($_POST["confirm"])) {
+	$queue = json_decode(file_get_contents('../preferences.json'), true)["requests"] == "true" ? false : true;
+	
 	//reads shift data from file
 	$handle = fopen("../data.json", "r+");
 	$data = array(array());
@@ -12,22 +13,20 @@ if(isset($_POST["confirm"])) {
 	//checks for correct entered value
 	$dy_loc = (int)(substr($_GET["loc"], 2, strlen($_GET["loc"]) - 1));
 	if(trim($_POST["confirm"]) == trim($data[$_GET["loc"]{0}][$dy_loc])) {
-		if(!isset($_GET['request'])) {
-			$loc = trim($data[$_GET["loc"]{0}][$dy_loc]);
-			include '../iputils.php';
-			$ip = getIP();
-			$removed = array("name" => $loc, "shiftlocation" => $_GET["loc"]{0} . "-" . $dy_loc,
-				"accessed" => date("m-d-Y H:i:s T"), "ip" => $ip);
+		$loc = trim($data[$_GET["loc"]{0}][$dy_loc]);
+		$removed = array("name" => $loc, "shiftlocation" => $_GET["loc"]{0} . "-" . $dy_loc, "accessed" => date("m-d-Y H:i:s T"));
+		if($queue || isset($_GET["line"])) {
 			file_put_contents("removelog.json", json_encode($removed) . PHP_EOL, FILE_APPEND);
 			$data[$_GET["loc"]{0}][$dy_loc] = "";
 		} else {
-			$data[$_GET["loc"]{0}][$dy_loc] .= ' - DELETION REQUESTED';
+			file_put_contents("removequeue.json", json_encode($removed) . PHP_EOL, FILE_APPEND);
 		}
-	} else {
+	} else if(!isset($_GET["line"])){
 		echo '<a>The scout name <b>' . $_POST["confirm"] . '</b> did not match the correct scout name of <b>' . $data[$_GET["loc"]{0}][$dy_loc];
 		die('</b><br /><a>You will be redirected in </a><span id="seconds">10</span> <a> seconds</a><script src="redirect.js" type="text/javascript"></script>');
 	}
-
+	
+if(isset($_POST["confirm"])) {
 	//clears old shift data file
 	ftruncate(fopen("../data.json", "r+"), 0);
 
@@ -46,9 +45,18 @@ if(isset($_POST["confirm"])) {
 	file_put_contents("../timestamp.txt", time(), FILE_APPEND | LOCK_EX);
 }
 
-if(isset($_GET["admin"])) {
-	header("refresh:0;url=index.php?admin");
+if(isset($_GET["line"])) {
+	$removeFile = file("removequeue.json");
+	unset($removeFile[(int)$_GET["line"]]);
+	file_put_contents("removequeue.json", implode("", $removeFile));
+	header("refresh:0;url=requests.php");
 } else {
-	header("refresh:0;url=index.php");
+	if(isset($_GET["admin"])) {
+		header("refresh:0;url=index.php?admin");
+	} else {
+		header("refresh:0;url=index.php");
+	}
 }
+
+
 ?>

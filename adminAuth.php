@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include "auth.php";
 if (authMain() == "admin") {
 	authCheck();
@@ -14,11 +15,11 @@ if (authMain() == "admin") {
 </style>
 
 <body style="text-align:center;">
-<a><b>Admin Authorized Pages</b></a><br />
-<a href="adminAuth.php?reset">Reset & backup shifts</a><br />
-<a href="adminAuth.php?view">View past years' shifts</a><br />
+<a><b>TR37 Admin Authorized Pages</b></a><br />
 <a href="adminAuth.php?signup">Sign up for new shifts</a><br />
 <a href="adminAuth.php?comment">View or add shift comments</a><br />
+<a href="adminAuth.php?reset">Reset & backup shifts</a><br />
+<a href="adminAuth.php?view">View past years' shifts</a><br />
 <a href="adminAuth.php?delete">Manage shift deletions</a><br />
 <a href="adminAuth.php?preferences">Set website preferences</a><br />
 <hr />
@@ -33,7 +34,7 @@ if (isset($_GET["reset"])) {
 } else if (isset($_GET["comment"])) {
 	echo '<iframe width="100%" height="84%"src="comment/index.php?admin" style="border:0;"></iframe>';
 } else if (isset($_GET["delete"])) {
-	echo '<iframe width="100%" height="84%"src="delete/index.php?admin" style="border:0;"></iframe>';
+	echo '<iframe width="100%" height="84%"src="delete/requests.php?admin" style="border:0;"></iframe>';
 } else if (isset($_GET["preferences"])) {
 	echo '<iframe width="100%" height="84%"src="preferences.php" style="border:0;"></iframe>';
 }

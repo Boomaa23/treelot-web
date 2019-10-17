@@ -10,7 +10,7 @@
 </head>
 
 <body>
-<h2>Page Site Status</h2>
+<h2>Site Status</h2>
 <p>A check indicates the site is up to date with GitHub.</p>
 
 <?php

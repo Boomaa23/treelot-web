@@ -1,4 +1,5 @@
 <?php 
+session_start();
 if (!isset($_GET["admin"])) {
 	include "auth.php";
 	if ((authMain() != "admin") && (authMain() != "user")) {
@@ -7,6 +8,10 @@ if (!isset($_GET["admin"])) {
 	if (authMain() == "admin") {
 		header("refresh:0;url=adminAuth.php?signup");
 	}
+}
+
+if(!isset($_SESSION['filled'])) {
+	$_SESSION['filled'] = array("");
 }
 ?>
 
@@ -32,7 +37,7 @@ if (!isset($_GET["admin"])) {
 	<?php 
 		$prefs = json_decode(file_get_contents('preferences.json'), true);
 		$deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
-		if($prefs["rewrites"] === "false") { echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>'; }
+		echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>';
 		echo ' <button><a href="archive/csv.php?src=root&year=' . json_decode(file_get_contents("resetDates.json"))[2] . '" id="nostyle"><b>Download shifts as CSV</b></a></button>';
 		$dateStart = (new DateTime("now", new DateTimeZone("America/Los_Angeles")));
 		$dateEnd = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->add(new DateInterval("P7D"));
@@ -82,10 +87,6 @@ if (!isset($_GET["admin"])) {
 		copy('basedata.json', 'data.json');
 	}
 	
-	//grab ip for ip-based shift rewrites
-	include 'iputils.php';
-	$ip = getIP();
-	
 	//reads existing signups from file
 	$handle = fopen("data.json", "r+");
 	$data = array(array());
@@ -96,7 +97,6 @@ if (!isset($_GET["admin"])) {
 	}
 	
 	//reads all other data from files
-	$ipmap = json_decode(file_get_contents('shiftipmap.json'), true);
 	$prefs = json_decode(file_get_contents('preferences.json'), true);
 	$dates = json_decode(file_get_contents("resetDates.json"));
 	
@@ -111,8 +111,8 @@ if (!isset($_GET["admin"])) {
 	foreach ($period as $dt) {
 		//prevents modification of already filled slots
 		$read = array(array());
-		for($i = 0;$i <= 5;$i++) {
-			$read[$i][$day] = !empty($data[$i][$day]) && ($ipmap[$i][$day] == $ip) && (trim($prefs["rewrites"]) === "false") ? 'id="dis" readonly' : "";
+		for($i = 0;$i < 6;$i++) {
+			 $read[$i][$day] = !empty($data[$i][$day]) && !array_search($i . '-' . $day, $_SESSION["filled"]) ? 'id="dis" readonly' : "";
 		}
 
 		//checks to disable weekday shifts

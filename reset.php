@@ -17,7 +17,7 @@ if (authMain() != "admin") {
 
 <body>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>?success" method="post">
-<h2>TR37 Shift Reset & Backup</h2>
+<h2>Shift Reset & Backup</h2>
 <p>Used annually to reset everything after each year's Tree Lot is over.<br /> Automatically backs up old shifts for viewing.</p>
 <?php $dtsin = json_decode(file_get_contents("resetDates.json")); ?>
 
@@ -29,13 +29,13 @@ if (authMain() != "admin") {
 	<td>Year</td>
 </tr>
 <tr>
-	<td>Starting Dates</td>
+	<td>Starting Date</td>
 	<td><input type="number" id="startMonth" name="startMonth" size="20" min="1" max="12" value="<?php echo (int)$dtsin[0]; ?>" required></td>
 	<td><input type="number" id="startDay" name="startDay" size="20" min="1" max="31" value="<?php echo (int)$dtsin[1]; ?>" required></td>
 	<td><input type="number" id="startYear" name="startYear" size="20" min="2000" value="<?php echo (int)$dtsin[2]; ?>" required></td>
 </tr>
 <tr>
-	<td>Ending Dates</td>
+	<td>Ending Date</td>
 	<td><input type="number" id="endMonth" name="endMonth" size="20" min="1" max="12" value="<?php echo (int)$dtsin[3]; ?>" required></td>
 	<td><input type="number" id="endDay" name="endDay" size="20" min="1" max="31" value="<?php echo (int)$dtsin[4]; ?>" required></td>
 	<td><input type="number" id="endYear" name="endYear" size="20" min="2000" value="<?php echo (int)$dtsin[5]; ?>" required></td>

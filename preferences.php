@@ -17,22 +17,17 @@ if (authMain() != "admin") {
 
 <body>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>?success" method="post">
-<h2>TR37 Website Preferences</h2>
+<h2>Website Preferences</h2>
 <p>Site-wide preferences. Warning: don't mess with this unless you know what you're doing.</p><br />
 <?php 
   $dtsin = json_decode(file_get_contents("resetDates.json")); 
   $prefs = json_decode(file_get_contents('preferences.json'), true);
 ?>
 
-<a><b>Enable deletion requests</b><i>(default: no)</i>: </a>
+<a><b>Enable deletion requests </b><i>(default: yes)</i>: </a>
 	<input type="radio" id="request_delete" name="request_delete" value="true" <?php echo $prefs["requests"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
 	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo $prefs["requests"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
   <a>(shift deletions must be approved by an admin)</a><br /><br />
-
-<a><b>Enable IP-based shift rewrites </b><i>(default: yes)</i>: </a>
-  <input type="radio" id="rewrite_enable" name="rewrite_enable" value="true" <?php echo $prefs["rewrites"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
-  <input type="radio" id="rewrite_enable" name="rewrite_enable" value="false" <?php echo $prefs["rewrites"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
-  <a>(shifts will be greyed out after entry to all but the inital IP that entered it)</a><br /><br />
 
 <a><b>Enable lot setup shifts </b><i>(default: no)</i>: </a>
   <input type="radio" id="setup_shifts" name="setup_shifts" value="true" <?php echo $prefs["setup"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
@@ -48,7 +43,6 @@ if (authMain() != "admin") {
 if(isset($_GET["success"])) {
   file_put_contents("preferences.json", json_encode(array(
 		"requests" => $_POST["request_delete"], 
-		"rewrites" => $_POST["rewrite_enable"], 
 		"setup" => $_POST["setup_shifts"]), JSON_PRETTY_PRINT));
 	echo 'Site-wide preferences changed successfully';
 }
