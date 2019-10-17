@@ -13,7 +13,8 @@
   "delete": [
     "deleteAction.php",
     "index.php",
-    "redirect.js"
+    "redirect.js",
+    "requests.php"
   ],
   "root": [
     ".gitignore",
@@ -23,7 +24,6 @@
     "auth.php",
     "error.php",
     "index.php",
-    "iputils.php",
     "preferences.php",
     "reset.php",
     "status.php"
