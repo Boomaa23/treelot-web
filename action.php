@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../auth.php";
+include "auth.php";
 if ((authMain() != "admin") && (authMain() != "user")) {
 	die("You do not have the adequate credentials to view this page.");
 }	
