@@ -47,6 +47,7 @@ foreach($period as $dt) {
 			$content .= ',';
 		}
 	}
+	$j++;
 	$content .= "\n";
 }
 
