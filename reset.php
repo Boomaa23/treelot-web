@@ -94,7 +94,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 		ftruncate(fopen("data.json", "r+"), 0);
 		ftruncate(fopen("comment/allcomments.json", "r+"), 0);
 		ftruncate(fopen("delete/removelog.json", "r+"), 0);
-		ftruncate(fopen("shiftipmap.json", "r+"), 0);
+		//ftruncate(fopen("shiftipmap.json", "r+"), 0);
 	} else {
 		//reads existing signups from file
 		$handle = fopen("data.json", "r+");
@@ -115,7 +115,8 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	}
 	
 	$placeholder = array_fill(0, abs($days), "");
-	if(!isset($_POST["expand"])) {
+	// DEPRECATED by session-based shift rewrites/deletion
+	/*if(!isset($_POST["expand"])) {
 		//put placeholders in shiftipmap
 		$placeholder_arr = array_fill(0, 6, $placeholder);
 		file_put_contents('shiftipmap.json', json_encode($placeholder_arr, JSON_PRETTY_PRINT));
@@ -127,7 +128,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 			$o_ips[$i] = array_merge($o_ips[$i], array_fill(0, ($days - $oldsize + 1), ""));
 		}
 		file_put_contents('shiftipmap.json', json_encode($o_ips, JSON_PRETTY_PRINT));
-	}
+	}*/
 	
 	//dynamically create basedata based on # of days
 	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 5) . json_encode($placeholder));

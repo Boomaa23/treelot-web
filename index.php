@@ -31,7 +31,7 @@ if(!isset($_SESSION['filled'])) {
 <body>
 	<h1>Troop 37 Tree Lot Signup</h1>
 	<div id="par">
-	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout must sign up for at least 16 hours worth of shifts.</p>
+	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout should sign up for at least 16 hours worth of shifts.</p>
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:ncograin@gmail.com">ncograin@gmail.com</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
 	<?php 
@@ -117,7 +117,7 @@ if(!isset($_SESSION['filled'])) {
 
 		//checks to disable weekday shifts
 		$dayCk = (7 - (int)$dates[6]) % 7;
-		if (($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) || ($day === 0 && $prefs["setup"] === "false")) {
+		if (($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) && ($day !== 0 || $prefs["setup"] !== "true")) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
 			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
