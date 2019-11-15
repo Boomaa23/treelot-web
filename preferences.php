@@ -33,7 +33,12 @@ if (authMain() != "admin") {
   <input type="radio" id="setup_shifts" name="setup_shifts" value="true" <?php echo $prefs["setup"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
   <input type="radio" id="setup_shifts" name="setup_shifts" value="false" <?php echo $prefs["setup"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
   <a>(users will not be able to sign up for shifts during tree recieving)</a><br /><br />
-
+	
+<a><b>Put site into Maintenance Mode </b><i>(default: no)</i>: </a>
+  <input type="radio" id="maintenance" name="maintenance" value="true" <?php echo $prefs["maintenance"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
+  <input type="radio" id="maintenance" name="maintenance" value="false" <?php echo $prefs["maintenance"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
+  <a>(signups are disabled to use or access)</a><br /><br />
+	
 <input type="submit" value="Submit">
 </form>
 </body>
@@ -43,7 +48,8 @@ if (authMain() != "admin") {
 if(isset($_GET["success"])) {
   file_put_contents("preferences.json", json_encode(array(
 		"requests" => $_POST["request_delete"], 
-		"setup" => $_POST["setup_shifts"]), JSON_PRETTY_PRINT));
+		"setup" => $_POST["setup_shifts"],
+		"maintenance" => $_POST["maintenance"]), JSON_PRETTY_PRINT));
 	echo 'Site-wide preferences changed successfully';
 }
 ?>

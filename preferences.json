@@ -1,4 +1,5 @@
 {
     "requests": "true",
-    "setup": "false"
+    "setup": "false",
+    "maintenance": "false"
 }

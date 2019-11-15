@@ -13,6 +13,10 @@ if (!isset($_GET["admin"])) {
 if(!isset($_SESSION['filled'])) {
 	$_SESSION['filled'] = array("");
 }
+
+if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "true") {
+	die("This site is currently down for maintenance and should be back up shortly.");
+}
 ?>
 
 <html>
