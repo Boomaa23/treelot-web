@@ -24,7 +24,7 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	}
 	
 	//form new posted data into 2d array and note differences
-	$data_array = array($_POST["AA"], $_POST["AB"], $_POST["BA"], $_POST["BB"], $_POST["CA"], $_POST["CB"]);
+	$data_array = array($_POST["AA"], $_POST["AB"], $_POST["AC"], $_POST["BA"], $_POST["BB"], $_POST["BC"], $_POST["CA"], $_POST["CB"], $_POST["CC"]);
 	$diff_array = array();
 	for($i = 0;$i < sizeof($data_array);$i++) {
 		for($j = 0;$j < sizeof($data_array[$i]);$j++) {
@@ -47,9 +47,9 @@ if(isset($_POST["AA"]) && ($_GET["ts"] == file_get_contents("timestamp.txt"))) {
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
 	
 	//writes inputs from html to file
-	$data = json_encode($_POST["AA"]) . PHP_EOL . json_encode($_POST["AB"]) . PHP_EOL . 
-	json_encode($_POST["BA"]) . PHP_EOL . json_encode($_POST["BB"]) . PHP_EOL . 
-	json_encode($_POST["CA"]) . PHP_EOL . json_encode($_POST["CB"]);
+	$data = json_encode($_POST["AA"]) . PHP_EOL . json_encode($_POST["AB"]) . PHP_EOL . json_encode($_POST["AC"]) . PHP_EOL .
+	json_encode($_POST["BA"]) . PHP_EOL . json_encode($_POST["BB"]) . PHP_EOL . json_encode($_POST["BC"]) . PHP_EOL .
+	json_encode($_POST["CA"]) . PHP_EOL . json_encode($_POST["CB"]) . PHP_EOL . json_encode($_POST["CC"]);
 	file_put_contents("data.json", $data, FILE_APPEND);
 	
 	//writes new timestamp to file

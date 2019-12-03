@@ -106,7 +106,7 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 
 	//setup of date counter
 	$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
-	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
+	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . ($dates[4] + 1));
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin, $interval, $end);
 	$day = 0;
@@ -115,7 +115,7 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 	foreach ($period as $dt) {
 		//prevents modification of already filled slots
 		$read = array(array());
-		for($i = 0;$i < 6;$i++) {
+		for($i = 0;$i < 9;$i++) {
 			 $read[$i][$day] = !empty($data[$i][$day]) && !array_search($i . '-' . $day, $_SESSION["filled"]) ? 'id="dis" readonly' : "";
 		}
 
@@ -125,20 +125,24 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
 			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
-			<input id="dis" type="text" name="AB[]" value="' . $data[1][$day] . '" readonly><br></td>';
+			<input id="dis" type="text" name="AB[]" value="' . $data[1][$day] . '" readonly><br>
+			<input id="dis" type="text" name="AC[]" value="' . $data[2][$day] . '" readonly><br></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
 			<td><input type="text" name="AA[]" value="' . $data[0][$day] . '" ' . $read[0][$day] . '><br>
-			<input type="text" name="AB[]" value="' . $data[1][$day] . '" ' . $read[1][$day] . '><br></td>';
+			<input type="text" name="AB[]" value="' . $data[1][$day] . '" ' . $read[1][$day] . '><br>
+			<input type="text" name="AC[]" value="' . $data[2][$day] . '" ' . $read[2][$day] . '><br></td>';
 		}
 
 		//finishes input box setup
 		echo '
-		<td><input type="text" name="BA[]" value="' . $data[2][$day] . '" ' . $read[2][$day] . '><br>
-		<input type="text" name="BB[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br></td>
-		<td><input type="text" name="CA[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
-		<input type="text" name="CB[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '><br></td>
+		<td><input type="text" name="BA[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br>
+		<input type="text" name="BB[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
+		<input type="text" name="BC[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '><br></td>
+		<td><input type="text" name="CA[]" value="' . $data[6][$day] . '" ' . $read[6][$day] . '><br>
+		<input type="text" name="CB[]" value="' . $data[7][$day] . '" ' . $read[7][$day] . '><br>
+		<input type="text" name="CC[]" value="' . $data[8][$day] . '" ' . $read[8][$day] . '><br></td>
 		</tr>';
 		$day++;
 	}

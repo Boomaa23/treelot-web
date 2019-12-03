@@ -85,7 +85,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	
 	//calculate number of days in shift range
 	$start = strtotime($resetData[2] . "-" . $resetData[0] . "-" . $resetData[1]);
-	$end = strtotime($resetData[5] . "-" . $resetData[3] . "-" . $resetData[4]);
+	$end = strtotime($resetData[5] . "-" . $resetData[3] . "-" . ($resetData[4] + 1));
 	$days = round(($end - $start) / (60 * 60 * 24));
 	
 	//clears old files
@@ -131,7 +131,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	}*/
 	
 	//dynamically create basedata based on # of days
-	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 5) . json_encode($placeholder));
+	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 8) . json_encode($placeholder));
 	
 	//copies in blank shift files or expanded shift data
 	if(!isset($_POST["expand"])) {
