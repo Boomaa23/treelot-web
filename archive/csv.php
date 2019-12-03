@@ -31,19 +31,19 @@ $dates = json_decode(file_get_contents($dateSrc));
 
 //setup of date counter
 $begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
-$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . $dates[4]);
+$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . ($dates[4] + 1));
 $interval = DateInterval::createFromDateString('1 day');
 $period = new DatePeriod($begin, $interval, $end);
 $wk = 0;
 
 $filename = $year . '_treelot-shift-report_' . date("c") . '.csv';
-$content = ",9-1 #1,9-1 #2,1/3-5 #1, 1/3-5 #2, 5-9 #1, 5-9 #2\n";
+$content = ", 9-1 #1, 9-1 #2, 9-1 #3, 1/3-5 #1, 1/3-5 #2, 1/3-5 #3, 5-9 #1, 5-9 #2, 5-9 #3\n";
 $j = 0;
 foreach($period as $dt) {
   $content .= ($dt->format("m/d")) . ',';
-	for($i = 0;$i <= 5;$i++) {
+	for($i = 0;$i <= 8;$i++) {
 		$content .= $data[$i][$j];
-		if($i !== 5) {
+		if($i !== 8) {
 			$content .= ',';
 		}
 	}
