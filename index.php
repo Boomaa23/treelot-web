@@ -104,6 +104,11 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 	$prefs = json_decode(file_get_contents('preferences.json'), true);
 	$dates = json_decode(file_get_contents("resetDates.json"));
 
+	// hide row C via CSS if pref is set true
+	if ($prefs["expand"] !== "true") {
+		echo '<link type="text/css" rel="stylesheet" href="hide-row-c.css">';
+	}
+
 	//setup of date counter
 	$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
 	$end = new DateTime($dates[5] . "-" . $dates[3] . "-" . ($dates[4] + 1));
@@ -124,25 +129,25 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 		if (($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) || ($day === 0 && $prefs["setup"] === "false")) {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input id="dis" type="text" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
-			<input id="dis" type="text" name="AB[]" value="' . $data[1][$day] . '" readonly><br>
-			<input id="dis" type="text" name="AC[]" value="' . $data[2][$day] . '" readonly><br></td>';
+			<td><input id="dis" type="text" class="COL_A ROW_A" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
+			<input id="dis" type="text" class="COL_A ROW_B" name="AB[]" value="' . $data[1][$day] . '" readonly><br>
+			<input id="dis" type="text" class="COL_A ROW_C" name="AC[]" value="' . $data[2][$day] . '" readonly></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input type="text" name="AA[]" value="' . $data[0][$day] . '" ' . $read[0][$day] . '><br>
-			<input type="text" name="AB[]" value="' . $data[1][$day] . '" ' . $read[1][$day] . '><br>
-			<input type="text" name="AC[]" value="' . $data[2][$day] . '" ' . $read[2][$day] . '><br></td>';
+			<td><input type="text" class="COL_A ROW_A" name="AA[]" value="' . $data[0][$day] . '" ' . $read[0][$day] . '><br>
+			<input type="text" class="COL_A ROW_B" name="AB[]" value="' . $data[1][$day] . '" ' . $read[1][$day] . '><br>
+			<input type="text" class="COL_A ROW_C" name="AC[]" value="' . $data[2][$day] . '" ' . $read[2][$day] . '></td>';
 		}
 
 		//finishes input box setup
 		echo '
-		<td><input type="text" name="BA[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br>
-		<input type="text" name="BB[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
-		<input type="text" name="BC[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '><br></td>
-		<td><input type="text" name="CA[]" value="' . $data[6][$day] . '" ' . $read[6][$day] . '><br>
-		<input type="text" name="CB[]" value="' . $data[7][$day] . '" ' . $read[7][$day] . '><br>
-		<input type="text" name="CC[]" value="' . $data[8][$day] . '" ' . $read[8][$day] . '><br></td>
+		<td><input type="text" class="COL_B ROW_A" name="BA[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br>
+		<input type="text" class="COL_B ROW_B" name="BB[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
+		<input type="text" class="COL_B ROW_C" name="BC[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '></td>
+		<td><input type="text" class="COL_C ROW_A" name="CA[]" value="' . $data[6][$day] . '" ' . $read[6][$day] . '><br>
+		<input type="text" class="COL_C ROW_B" name="CB[]" value="' . $data[7][$day] . '" ' . $read[7][$day] . '><br>
+		<input type="text" class="COL_C ROW_C" name="CC[]" value="' . $data[8][$day] . '" ' . $read[8][$day] . '></td>
 		</tr>';
 		$day++;
 	}

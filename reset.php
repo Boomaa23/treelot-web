@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "auth.php";
 if (authMain() != "admin") {
 	die("You do not have the adequate credentials to view this page.");
@@ -54,7 +54,7 @@ if (authMain() != "admin") {
 
 <?php
 //init for inputs & archive
-$dtsin[] = json_decode(file_get_contents("resetDates.json")); 
+$dtsin[] = json_decode(file_get_contents("resetDates.json"));
 $year = (int)$dtsin[2];
 
 if(isset($_GET["success"])) {
@@ -66,28 +66,29 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	if(!file_exists('archive/' . $year . '/')) {
 		mkdir('archive/' . $year);
 	}
-	
+
 	//moves schedules to archive
 	copy('data.json', 'archive/' . $year . '/data.json');
+	copy('preferences.json', 'archive/' . $year . '/preferences.json');
 	copy('resetDates.json', 'archive/' . $year . '/resetDates.json');
 	copy('comment/allcomments.json', 'archive/' . $year . '/allcomments.json');
 	copy('delete/removelog.json', 'archive/' . $year . '/removelog.json');
-	
+
 	if(isset($_POST["backup"])) {
 		header("refresh:0");
 		exit();
 	}
-	
+
 	//puts dates into data file
 	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);
 	ftruncate(fopen("resetDates.json", "r+"), 0);
 	file_put_contents("resetDates.json", json_encode($resetData), FILE_APPEND);
-	
+
 	//calculate number of days in shift range
 	$start = strtotime($resetData[2] . "-" . $resetData[0] . "-" . $resetData[1]);
 	$end = strtotime($resetData[5] . "-" . $resetData[3] . "-" . ($resetData[4] + 1));
 	$days = round(($end - $start) / (60 * 60 * 24));
-	
+
 	//clears old files
 	$expanded = "";
 	if(!isset($_POST["expand"])) {
@@ -104,7 +105,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 			$data[$linecount] = json_decode(fgets($handle));
 			$linecount++;
 		}
-		
+
 		//merges new array of blanks (sized to fit) with old data
 		for($i = 0;$i < sizeof($data);$i++) {
 			$expanded .= json_encode(array_merge($data[$i], array_fill(0, ($days - sizeof($data[0])), "")));
@@ -113,7 +114,7 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 			}
 		}
 	}
-	
+
 	$placeholder = array_fill(0, abs($days), "");
 	// DEPRECATED by session-based shift rewrites/deletion
 	/*if(!isset($_POST["expand"])) {
@@ -129,17 +130,17 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 		}
 		file_put_contents('shiftipmap.json', json_encode($o_ips, JSON_PRETTY_PRINT));
 	}*/
-	
+
 	//dynamically create basedata based on # of days
 	file_put_contents('basedata.json', str_repeat(json_encode($placeholder) . PHP_EOL, 8) . json_encode($placeholder));
-	
+
 	//copies in blank shift files or expanded shift data
 	if(!isset($_POST["expand"])) {
 		copy('basedata.json', 'data.json');
 	} else {
 		file_put_contents('data.json', $expanded);
 	}
-	
+
 	//clears & resets page/timestamp
 	ftruncate(fopen("timestamp.txt", "r+"), 0);
 	header("refresh:0");

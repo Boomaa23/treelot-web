@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "../auth.php";
 if (authMain() != "admin") {
 	die("You do not have the adequate credentials to view this page.");
@@ -34,7 +34,7 @@ if (authMain() != "admin") {
 		$year = $_GET["year"];
 		echo '<button><a class="nostyle" href="csv.php?year=' . $year . '">Download as CSV</a></button>';
 		echo '<h2><i>' . $year . ' Shifts</i></h2><table cellspacing="0" cellpadding="5" align="center">';
-		
+
 		//reads existing signups from file
 		if(file_exists($year . "/")) {
 			$handle = fopen($year . "/data.json", "r+");
@@ -56,8 +56,14 @@ if (authMain() != "admin") {
 			<th>5pm-9pm</th>
 		</tr>';
 
-		//read values from reset page
+		//read data values from json
 		$dates = json_decode(file_get_contents($year . "/resetDates.json"));
+		$prefs = json_decode(file_get_contents($year . '/preferences.json'), true);
+
+		// hide row C via CSS if pref is set true
+		if ($prefs["expand"] !== "true") {
+			echo '<link type="text/css" rel="stylesheet" href="../hide-row-c.css">';
+		}
 
 		//setup of date counter
 		$begin = new DateTime($dates[2] . "-" . $dates[0] . "-" . $dates[1]);
@@ -71,20 +77,23 @@ if (authMain() != "admin") {
 			echo '
 			<tr>
 				<td>' . $dt->format("l, m/d/Y\n").'</td>
-				<td><input type="text" name="AA[]" value="' . $data[0][$wk] . '" id="dis" readonly><br>
-				<input type="text" name="AB[]" value="' . $data[1][$wk] . '" id="dis" readonly><br></td>
-				<td><input type="text" name="BA[]" value="' . $data[2][$wk] . '" id="dis" readonly><br>
-				<input type="text" name="BB[]" value="' . $data[3][$wk] . '" id="dis" readonly><br></td>
-				<td><input type="text" name="CA[]" value="' . $data[4][$wk] . '" id="dis" readonly><br>
-				<input type="text" name="CB[]" value="' . $data[5][$wk] . '" id="dis" readonly><br></td>
+				<td><input type="text" class="COL_A ROW_A" name="AA[]" value="' . $data[0][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_A ROW_B" name="AB[]" value="' . $data[1][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_A ROW_C" name="AC[]" value="' . $data[2][$wk] . '" id="dis" readonly></td>
+				<td><input type="text" class="COL_B ROW_A" name="BA[]" value="' . $data[3][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_B ROW_B" name="BB[]" value="' . $data[4][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_B ROW_C" name="BC[]" value="' . $data[5][$wk] . '" id="dis" readonly></td>
+				<td><input type="text" class="COL_C ROW_A" name="CA[]" value="' . $data[6][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_C ROW_B" name="CB[]" value="' . $data[7][$wk] . '" id="dis" readonly><br>
+				<input type="text" class="COL_C ROW_C" name="CC[]" value="' . $data[8][$wk] . '" id="dis" readonly></td>
 			</tr>';
 			$wk++;
 		}
-		
+
 		echo '
 		</table>
 		<h2><i>' . $year . ' Comments</i></h2>';
-		
+
 		$handle = fopen($year . "/allcomments.json", "r+");
 		$data = array(array());
 		$linecount = 0;
@@ -112,5 +121,3 @@ if (authMain() != "admin") {
 	?>
 </body>
 </html>
-
-

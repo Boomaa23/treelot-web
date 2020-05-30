@@ -1,4 +1,5 @@
 {
+    "expand": "true",
     "requests": "true",
     "setup": "false",
     "maintenance": "false"
