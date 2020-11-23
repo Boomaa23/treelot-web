@@ -41,6 +41,18 @@ if (authMain() != "admin") {
 	<td><input type="number" id="endYear" name="endYear" size="20" min="2000" value="<?php echo (int)$dtsin[5]; ?>" required></td>
 </tr>
 </table><br />
+<table align="center">
+	<tr>
+		<td>Shift Time A: </a>
+		<td>Shift Time B: </a>
+		<td>Shift Time C: </a>
+	</tr>
+	<tr>
+		<td><input type="text" size="10" id="trA" name="trA" value="<?php echo $dtsin[7]; ?>"></td>
+		<td><input type="text" size="10" id="trB" name="trB" value="<?php echo $dtsin[8]; ?>"></td>
+		<td><input type="text" size="10" id="trC" name="trC" value="<?php echo $dtsin[9]; ?>"></td>
+	</tr>
+</table><br />
 	<a>Offset (# of days the starting day is from a Saturday): </a>
 	<input type="number" id="off" name="off" min="0" max="6" value="<?php echo (int)$dtsin[6]; ?>"><br />
 	<a>Expand current shifts - no reset <i>(default: unchecked): </i></a>
@@ -80,7 +92,8 @@ if(isset($_POST["startYear"]) && isset($_POST["off"])) {
 	}
 
 	//puts dates into data file
-	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"], $_POST["endDay"], $_POST["endYear"], $_POST["off"]);
+	$resetData = array($_POST["startMonth"], $_POST["startDay"], $_POST["startYear"], $_POST["endMonth"],
+		$_POST["endDay"], $_POST["endYear"], $_POST["off"], $_POST["trA"] ,$_POST["trB"], $_POST["trC"]);
 	ftruncate(fopen("resetDates.json", "r+"), 0);
 	file_put_contents("resetDates.json", json_encode($resetData), FILE_APPEND);
 

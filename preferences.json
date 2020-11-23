@@ -1,5 +1,5 @@
 {
-    "expand": "true",
+    "expand": "weekends",
     "requests": "true",
     "setup": "false",
     "maintenance": "false"

@@ -33,9 +33,10 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 </style>
 </head>
 <body>
+	<?php include("footer.html"); ?>
 	<h1>Troop 37 Tree Lot Signup</h1>
 	<div id="par">
-	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, so the afternoon shift is reduced to 3pm-5pm and there is no morning shift. There is space for two scouts (and their parents) to sign up for each shift. Each scout should sign up for at least 16 hours worth of shifts.</p>
+	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, split into two shifts of three hours each (3pm-6pm, 6pm-9pm) with no morning shift. There is space for two to three scouts scouts (and their parents) to sign up for each shift.</p>
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:treelot_web@sbtroop37.mytroop.us">treelot_web@sbtroop37.mytroop.us</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
 	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
 	<?php
@@ -75,13 +76,6 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 	</div>
 	<br />
 	<table cellspacing="0" cellpadding="5" align="center">
-	<tr> <!--times-->
-		<th></th>
-		<th>9am-1pm</th>
-		<th>1pm/3pm-5pm</th>
-		<th>5pm-9pm</th>
-	</tr>
-
 	<!--enter box fields-->
 	<form action="action.php?ts=<?php if(file_exists("timestamp.txt")) { echo file_get_contents("timestamp.txt") . PHP_EOL; } if(isset($_GET["admin"])) {echo "&admin";}?>" method="post">
 	<?php
@@ -104,9 +98,19 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 	$prefs = json_decode(file_get_contents('preferences.json'), true);
 	$dates = json_decode(file_get_contents("resetDates.json"));
 
-	// hide row C via CSS if pref is set true
-	if ($prefs["expand"] !== "true") {
+	echo '
+	<tr> <!--times-->
+		<th></th>
+		<th>' . $dates[7] . '</th>
+		<th>' . $dates[8] . '</th>
+		<th>' . $dates[9] . '</th>
+	</tr>';
+
+	// hide row C via CSS if pref is set
+	if ($prefs["expand"] === "never") {
 		echo '<link type="text/css" rel="stylesheet" href="hide-row-c.css">';
+	} else if ($prefs["expand"] === "weekends") {
+		echo '<link type="text/css" rel="stylesheet" href="hrc-weekdays.css">';
 	}
 
 	//setup of date counter
@@ -126,12 +130,16 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 
 		//checks to disable weekday shifts
 		$dayCk = (7 - (int)$dates[6]) % 7;
+		$isWeekday = "";
 		if (($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) || ($day === 0 && $prefs["setup"] === "false")) {
+			if ($day%7 !== $dayCk && ($day-1)%7 !== $dayCk) {
+				$isWeekday = "WEEKDAY";
+			}
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
-			<td><input id="dis" type="text" class="COL_A ROW_A" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
-			<input id="dis" type="text" class="COL_A ROW_B" name="AB[]" value="' . $data[1][$day] . '" readonly><br>
-			<input id="dis" type="text" class="COL_A ROW_C" name="AC[]" value="' . $data[2][$day] . '" readonly></td>';
+			<td><input id="dis" type="text" class="COL_A ROW_A ' . $isWeekday . '" name="AA[]" value="' . $data[0][$day] . '" readonly><br>
+			<input id="dis" type="text" class="COL_A ROW_B ' . $isWeekday . '" name="AB[]" value="' . $data[1][$day] . '" readonly><br>
+			<input id="dis" type="text" class="COL_A ROW_C ' . $isWeekday . '" name="AC[]" value="' . $data[2][$day] . '" readonly></td>';
 		} else {
 			echo '
 			<tr><td>' . $dt->format("l, m/d/Y\n") . '</td>
@@ -142,18 +150,18 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 
 		//finishes input box setup
 		echo '
-		<td><input type="text" class="COL_B ROW_A" name="BA[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br>
-		<input type="text" class="COL_B ROW_B" name="BB[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
-		<input type="text" class="COL_B ROW_C" name="BC[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '></td>
-		<td><input type="text" class="COL_C ROW_A" name="CA[]" value="' . $data[6][$day] . '" ' . $read[6][$day] . '><br>
-		<input type="text" class="COL_C ROW_B" name="CB[]" value="' . $data[7][$day] . '" ' . $read[7][$day] . '><br>
-		<input type="text" class="COL_C ROW_C" name="CC[]" value="' . $data[8][$day] . '" ' . $read[8][$day] . '></td>
+		<td><input type="text" class="COL_B ROW_A ' . $isWeekday . '" name="BA[]" value="' . $data[3][$day] . '" ' . $read[3][$day] . '><br>
+		<input type="text" class="COL_B ROW_B ' . $isWeekday . '" name="BB[]" value="' . $data[4][$day] . '" ' . $read[4][$day] . '><br>
+		<input type="text" class="COL_B ROW_C ' . $isWeekday . '" name="BC[]" value="' . $data[5][$day] . '" ' . $read[5][$day] . '></td>
+		<td><input type="text" class="COL_C ROW_A ' . $isWeekday . '" name="CA[]" value="' . $data[6][$day] . '" ' . $read[6][$day] . '><br>
+		<input type="text" class="COL_C ROW_B ' . $isWeekday . '" name="CB[]" value="' . $data[7][$day] . '" ' . $read[7][$day] . '><br>
+		<input type="text" class="COL_C ROW_C ' . $isWeekday . '" name="CC[]" value="' . $data[8][$day] . '" ' . $read[8][$day] . '></td>
 		</tr>';
 		$day++;
 	}
 	?>
 	</table>
-	<br /><input type="submit">
+	<br /><input type="submit"><br /><br />
 	</form>
 </body>
 </html>

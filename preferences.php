@@ -24,9 +24,10 @@ if (authMain() != "admin") {
   $prefs = json_decode(file_get_contents('preferences.json'), true);
 ?>
 
-<a><b>Expand shifts to three slots </b><i>(default: yes)</i>: </a>
-	<input type="radio" id="expand_shifts" name="expand_shifts" value="true" <?php echo $prefs["expand"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
-	<input type="radio" id="expand_shifts" name="expand_shifts" value="false" <?php echo $prefs["expand"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
+<a><b>Expand shifts to three slots </b><i>(default: always)</i>: </a>
+	<input type="radio" id="expand_shifts" name="expand_shifts" value="always" <?php echo $prefs["expand"] === "always" ? 'checked="checked"' : ""; ?> required>Always</input>
+	<input type="radio" id="expand_shifts" name="expand_shifts" value="weekends" <?php echo $prefs["expand"] === "weekends" ? 'checked="checked"' : ""; ?>>Weekends</input>
+	<input type="radio" id="expand_shifts" name="expand_shifts" value="never" <?php echo $prefs["expand"] === "never" ? 'checked="checked"' : ""; ?>>Never</input><br />
   <a>(each time slot will have three shift slots instead of two)</a><br /><br />
 
 <a><b>Enable deletion requests </b><i>(default: yes)</i>: </a>

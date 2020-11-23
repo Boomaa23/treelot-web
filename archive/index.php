@@ -48,17 +48,17 @@ if (authMain() != "admin") {
 			die ("There was a problem retrieving the shifts for your specified year");
 		}
 
-		echo '
-		<tr> <!--times-->
-			<th></th>
-			<th>9am-1pm</th>
-			<th>1pm/3pm-5pm</th>
-			<th>5pm-9pm</th>
-		</tr>';
-
 		//read data values from json
 		$dates = json_decode(file_get_contents($year . "/resetDates.json"));
 		$prefs = json_decode(file_get_contents($year . '/preferences.json'), true);
+
+		echo '
+		<tr> <!--times-->
+			<th></th>
+			<th>' . $dates[7] . '</th>
+			<th>' . $dates[8] . '</th>
+			<th>' . $dates[9] . '</th>
+		</tr>';
 
 		// hide row C via CSS if pref is set true
 		if ($prefs["expand"] !== "true") {
