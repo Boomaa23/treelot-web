@@ -38,40 +38,44 @@ if(json_decode(file_get_contents('preferences.json'), true)["maintenance"] === "
 	<div id="par">
 	<p>This is the website to sign up for tree lot shifts for Troop 37. Normal weekend hours are 9am-9pm in three shifts of four hours (9am-1pm, 1pm-5pm, 5pm-9pm). On the weekdays, the tree lot is only open from 3pm to 9pm, split into two shifts of three hours each (3pm-6pm, 6pm-9pm) with no morning shift. There is space for two to three scouts scouts (and their parents) to sign up for each shift.</p>
 	<p><b> Do not delete filled in shifts from other scouts.</b> Please contact the website administrator by email at <a href="mailto:treelot_web@sbtroop37.mytroop.us">treelot_web@sbtroop37.mytroop.us</a> if you have any issues with signups. Shift deletions can be accomodated by talking to the troop webmaster, scoutmaster, or tree lot manager. Thank you!</p>
-	<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>
-	<?php
-		$prefs = json_decode(file_get_contents('preferences.json'), true);
-		$deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
-		echo '<button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>';
+  <?php
+    $prefs = json_decode(file_get_contents('preferences.json'), true);
+    $deleteText = $prefs["requests"] === "true" ? 'Request a shift deletion' : 'Revoke a shift signup';
+    if($prefs["comments"] === "true") {
+      echo '<button><a href="comment/index.php" id="nostyle"><b>View or add shift comments</b></a></button>';
+    }
+		echo ' <button><a href="delete/index.php" id="nostyle"><b>' . $deleteText . '</b></a></button>';
 		echo ' <button><a href="archive/csv.php?src=root&year=' . json_decode(file_get_contents("resetDates.json"))[2] . '" id="nostyle"><b>Download shifts as CSV</b></a></button>';
 		$dateStart = (new DateTime("now", new DateTimeZone("America/Los_Angeles")));
 		$dateEnd = (new DateTime("now", new DateTimeZone("America/Los_Angeles")))->add(new DateInterval("P7D"));
 		$interval = DateInterval::createFromDateString('1 day');
 		$period = new DatePeriod($dateStart, $interval, $dateEnd);
 
-		echo '<p style="margin-bottom:0;">Comments for the next seven days: ' . $dateStart->format('m/d/Y') . ' - ' . $dateEnd->format('m/d/Y') . '</p>';
-		$handle = fopen("comment/allcomments.json", "r+");
-		$file = array(array());
-		for($l = 0;!feof($handle);$l++) {
-			$file[$l] = json_decode(fgets($handle));
-		}
+    if($prefs["comments"] === "true") {
+  		echo '<p style="margin-bottom:0;">Comments for the next seven days: ' . $dateStart->format('m/d/Y') . ' - ' . $dateEnd->format('m/d/Y') . '</p>';
+  		$handle = fopen("comment/allcomments.json", "r+");
+  		$file = array(array());
+  		for($l = 0;!feof($handle);$l++) {
+  			$file[$l] = json_decode(fgets($handle));
+  		}
 
-		$disp = 0;
-		for($i = 0;$i < sizeof($file) && !($disp >= 6);$i++) {
-			if($disp % 3 == 0 && !is_null($file[$i])) {
-				echo '<br />';
-			}
+  		$disp = 0;
+  		for($i = 0;$i < sizeof($file) && !($disp >= 6);$i++) {
+  			if($disp % 3 == 0 && !is_null($file[$i])) {
+  				echo '<br />';
+  			}
 
-			foreach($period as $dt) {
-				if(!is_null($file[$i]) && $file[$i][1] == $dt->format('m-d-Y')) {
-					$disp++;
-					echo '<a href="comment/view.php?line=' . $i . '&src=main">' . $file[$i][4] . ' - ' . $file[$i][0] . ' (' . $file[$i][2] . ')</a> &nbsp&nbsp';
-				}
-			}
-		}
-		if($disp > 6) {
-			echo '<br /><a href="comment/index.php">[SEE MORE]</a>';
-		}
+  			foreach($period as $dt) {
+  				if(!is_null($file[$i]) && $file[$i][1] == $dt->format('m-d-Y')) {
+  					$disp++;
+  					echo '<a href="comment/view.php?line=' . $i . '&src=main">' . $file[$i][4] . ' - ' . $file[$i][0] . ' (' . $file[$i][2] . ')</a> &nbsp&nbsp';
+  				}
+  			}
+  		}
+  		if($disp > 6) {
+  			echo '<br /><a href="comment/index.php">[SEE MORE]</a>';
+  		}
+    }
 	?>
 	</div>
 	<br />

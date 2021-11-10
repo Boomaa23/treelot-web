@@ -35,6 +35,11 @@ if (authMain() != "admin") {
 	<input type="radio" id="request_delete" name="request_delete" value="false" <?php echo $prefs["requests"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
   <a>(shift deletions must be approved by an admin)</a><br /><br />
 
+<a><b>Enable comments </b><i>(default: yes)</i>: </a>
+	<input type="radio" id="comments" name="comments" value="true" <?php echo $prefs["comments"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
+	<input type="radio" id="comments" name="comments" value="false" <?php echo $prefs["comments"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
+  <a>(comments will be displayed at the top of the main page)</a><br /><br />
+
 <a><b>Enable lot setup shifts </b><i>(default: no)</i>: </a>
   <input type="radio" id="setup_shifts" name="setup_shifts" value="true" <?php echo $prefs["setup"] === "true" ? 'checked="checked"' : ""; ?> required>Yes</input>
   <input type="radio" id="setup_shifts" name="setup_shifts" value="false" <?php echo $prefs["setup"] === "false" ? 'checked="checked"' : ""; ?>>No</input><br />
@@ -55,6 +60,7 @@ if(isset($_GET["change"])) {
   file_put_contents("preferences.json", json_encode(array(
 		"expand" => $_POST["expand_shifts"],
 		"requests" => $_POST["request_delete"],
+    "comments" => $_POST["comments"],
 		"setup" => $_POST["setup_shifts"],
 		"maintenance" => $_POST["maintenance"]), JSON_PRETTY_PRINT));
 	echo 'Site-wide preferences changed successfully';
